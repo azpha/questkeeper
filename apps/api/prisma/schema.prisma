@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id           Int                @id @default(autoincrement())
+  gameSlug     String
+  reviewStars  Int?
+  review       String?
+  currentState PossibleGameStates
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  games Game[]
+}
+
+// enums
+enum PossibleGameStates {
+  PLAYING
+  PAUSED
+  PLANNED
+  WISHLIST
+  COMPLETED
+}
