@@ -1,8 +1,12 @@
+import Header from "./components/Header";
+import Layout from "./components/Layout";
+
 function App() {
   return (
-    <div className="bg-black min-h-screen flex justify-center items-center">
-      <h1 className="text-white">Game Tracker</h1>
-    </div>
+    <Layout>
+      <Header />
+      <p>test</p>
+    </Layout>
   );
 }
 
