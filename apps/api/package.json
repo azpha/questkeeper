@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "studio": "pnpm exec prisma studio"
+    "studio": "pnpm exec prisma studio",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
