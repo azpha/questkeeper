@@ -6,15 +6,17 @@ import express, {
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ZodError } from "zod";
-import Auth from "./services/Auth";
+import path from "path";
 
 // routes
 import SettingsRouter from "./routes/SettingsRouter";
 import AuthRouter from "./routes/AuthRouter";
 import IgdbRouter from "./routes/IgdbRouter";
 import GamesRouter from "./routes/GameRouter";
+import Environment from "./utils/Environment";
 
 const app = express();
+const FRONTEND_APP_DIST_PATH = path.join(__dirname, "../../frontend/dist");
 app.use(express.json());
 app.use(
   cors({
@@ -27,17 +29,31 @@ app.use(cookieParser());
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 200,
+if (Environment!.NODE_ENV !== "development") {
+  app.use(express.static(FRONTEND_APP_DIST_PATH));
+  app.get("/", (req: Request, res: Response) => {
+    res.sendFile(path.join(FRONTEND_APP_DIST_PATH, "index.html"));
   });
-});
+} else {
+  app.get("/", (req: Request, res: Response) => {
+    res.status(200).json({
+      status: 200,
+    });
+  });
+}
 
 // routes
-app.use("/settings", SettingsRouter);
-app.use("/auth", AuthRouter);
-app.use("/igdb", IgdbRouter);
-app.use("/games", GamesRouter);
+const buildPath = (path: string) => {
+  if (Environment!.NODE_ENV === "development") {
+    return "/" + path;
+  } else {
+    return "/api/" + path;
+  }
+};
+app.use(buildPath("settings"), SettingsRouter);
+app.use(buildPath("auth"), AuthRouter);
+app.use(buildPath("igdb"), IgdbRouter);
+app.use(buildPath("games"), GamesRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === "development") console.error(err);
@@ -63,6 +79,6 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-app.listen(3001, async () => {
+app.listen(3000, async () => {
   console.log("[Server] API server has started");
 });
