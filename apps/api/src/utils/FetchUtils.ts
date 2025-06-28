@@ -21,6 +21,13 @@ async function FetchAndDownloadImage(url: string) {
   return id;
 }
 
+function GetImageFilePath(id: string) {
+  if (fs.existsSync(path.join(DOWNLOAD_PATH, id))) {
+    return path.join(DOWNLOAD_PATH, id);
+  } else return undefined;
+}
+
 export default {
   FetchAndDownloadImage,
+  GetImageFilePath,
 };

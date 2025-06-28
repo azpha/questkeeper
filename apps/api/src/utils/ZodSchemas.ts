@@ -43,6 +43,7 @@ const schemas = {
   },
   games: {
     id: z.coerce.number(),
+    getCover: z.string().min(1),
     create: z.object({
       gameSlug: z.string().min(1),
       currentState: z.enum([
