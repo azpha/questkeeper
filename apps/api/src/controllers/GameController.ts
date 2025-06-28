@@ -123,10 +123,10 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
           data: {
             title,
             developer:
-              involved_companies.filter((v) => v.developer)[0].company.name ||
+              involved_companies.filter((v) => v.developer)[0]?.company?.name ||
               "Not Found",
             publisher:
-              involved_companies.filter((v) => v.publisher)[0].company.name ||
+              involved_companies.filter((v) => v.publisher)[0]?.company?.name ||
               "Not Found",
             releaseDate: new Date(first_release_date * 1000),
             platforms: platforms.map((v) => v.name),
