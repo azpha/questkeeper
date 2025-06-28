@@ -61,6 +61,7 @@ type Screenshots = {
 };
 
 type User = {
+  name: string;
   email: string;
   userId: number;
 };

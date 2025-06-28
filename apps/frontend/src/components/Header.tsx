@@ -7,23 +7,27 @@ export default function Header() {
   const auth = useAuth();
 
   return (
-    <header className="text-black border-b">
+    <header className="text-black border-b select-none">
       <div className="container mx-auto p-4">
         <div className="flex items-center justify-between">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col gap-2">
             <Link to="/">
               <h1 className="text-white text-2xl font-semibold">QuestKeeper</h1>
             </Link>
             {auth.currentUser ? (
-              <p
-                onClick={async () => {
-                  auth.invalidateAuth();
-                  await api.logUserOut();
-                  location.reload();
-                }}
-                className="text-sm text-white flex items-end select-none hover:cursor-pointer hover:underline"
-              >
-                Log Out
+              <p className="text-white">
+                Hi,{" "}
+                <span className="font-semibold">{auth.currentUser.name}</span>!{" "}
+                <span
+                  className="hover:underline hover:cursor-pointer"
+                  onClick={async () => {
+                    auth.invalidateAuth();
+                    await api.logUserOut();
+                    location.reload();
+                  }}
+                >
+                  Log Out
+                </span>
               </p>
             ) : (
               <Link
