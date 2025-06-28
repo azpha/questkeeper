@@ -9,6 +9,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      auth.loadUserAuth();
+    }
+  }, []);
+  useEffect(() => {
     if (!auth.currentUser && auth.hasAuthLoaded) {
       navigate("/login");
     }

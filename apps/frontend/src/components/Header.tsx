@@ -23,12 +23,15 @@ export default function Header() {
                   await api.logUserOut();
                   location.reload();
                 }}
-                className="text-sm text-white flex items-end"
+                className="text-sm text-white flex items-end select-none hover:cursor-pointer hover:underline"
               >
                 Log Out
               </p>
             ) : (
-              <Link to="/login" className="text-sm text-white flex items-end">
+              <Link
+                to="/login"
+                className="text-sm text-white flex items-end select-none hover:cursor-pointer hover:underline"
+              >
                 Login
               </Link>
             )}

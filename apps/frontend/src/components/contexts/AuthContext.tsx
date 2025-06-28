@@ -14,24 +14,23 @@ const AuthContext = createContext<{
   hasAuthLoaded: boolean;
   isUserAuthenticated: boolean;
   invalidateAuth: () => void;
+  loadUserAuth: () => void;
 } | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [hasAuthLoaded, setHasAuthLoaded] = useState<boolean>(false);
 
+  const loadUserAuth = async () => {
+    api
+      .fetchCurrentUser()
+      .then((res) => setCurrentUser(res))
+      .catch(() => setCurrentUser(null));
+
+    setHasAuthLoaded(true);
+  };
+
   useEffect(() => {
-    const loadUserAuth = async () => {
-      const data = await api.fetchCurrentUser();
-      if (data) {
-        setCurrentUser(data);
-      } else {
-        setCurrentUser(null);
-      }
-
-      setHasAuthLoaded(true);
-    };
-
     loadUserAuth();
   }, []);
 
@@ -48,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         hasAuthLoaded,
         isUserAuthenticated,
         invalidateAuth,
+        loadUserAuth,
       }}
     >
       {children}
