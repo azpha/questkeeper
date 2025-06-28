@@ -24,12 +24,6 @@ export default function Search() {
   );
 
   useEffect(() => {
-    if (location.state?.query) {
-      debounced(location.state.query);
-      setQuery(location.state.query);
-    }
-  }, [location.state?.query]);
-  useEffect(() => {
     api.getAddedSlugs().then((res) => {
       if (res) {
         setAddedGames(res);
@@ -37,12 +31,12 @@ export default function Search() {
     });
   }, []);
   useEffect(() => {
-    const q = params.get("q");
+    const q = params.get("q") || location.state?.query;
     if (q) {
       setQuery(q);
       debounced(q);
     }
-  }, [params.get("q")]);
+  }, [params.get("q"), location.state?.query]);
 
   const ExistingGames = () => {
     return (
