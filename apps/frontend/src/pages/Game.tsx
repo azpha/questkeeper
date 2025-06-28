@@ -53,17 +53,14 @@ export default function Game() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <div className="lg:col-span-2">
               <div className="relative rounded-lg overflow-hidden mb-4">
-                <img
-                  src={`/api/games/image/${game?.coverId}`}
-                  alt={game?.title}
-                />
+                <img src={`/api/images/${game?.coverId}`} alt={game?.title} />
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {game.screenshotIds.slice(0, 6).map((v, k) => {
                   return (
                     <div key={k} className="relative rounded overflow w-full">
                       <img
-                        src={`/api/games/image/${v}`}
+                        src={`/api/images/${v}`}
                         alt={game?.title + " Screenshot"}
                         className="hover:scale-105 transition-transform cursor-pointer"
                       />

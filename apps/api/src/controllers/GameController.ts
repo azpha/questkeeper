@@ -206,28 +206,10 @@ async function UpdateGame(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-async function GetGameCover(req: Request, res: Response, next: NextFunction) {
-  try {
-    const body = Schemas.games.getCover.parse(req.params.id);
-    const filePath = FetchUtils.GetImageFilePath(body);
-
-    if (filePath) {
-      res.sendFile(filePath);
-    } else {
-      res.status(404).json({
-        status: 404,
-        message: "That cover was not found on this server",
-      });
-    }
-  } catch (e) {
-    next(e);
-  }
-}
 
 export default {
   AddGame,
   GetGame,
-  GetGameCover,
   GetManyGames,
   DeleteGame,
   UpdateGame,

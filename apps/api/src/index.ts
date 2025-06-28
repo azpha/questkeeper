@@ -42,6 +42,7 @@ if (Environment!.NODE_ENV !== "development") {
 }
 
 // routes
+app.use("/api/images", express.static(path.join(__dirname, "../files")));
 app.use("/api/auth", AuthRouter);
 app.use("/api/igdb", IgdbRouter);
 app.use("/api/games", GamesRouter);
