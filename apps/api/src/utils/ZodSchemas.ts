@@ -11,6 +11,7 @@ const schemas = {
       .default("development"),
     IGDB_CLIENT_ID: z.string().min(1),
     IGDB_CLIENT_SECRET: z.string().min(1),
+    STEAM_API_KEY: z.string().optional(),
   }),
   auth: {
     register: z.object({

@@ -67,11 +67,11 @@ type User = {
 };
 
 enum PossibleGameStates {
-  PLAYING,
-  PAUSED,
-  PLANNED,
-  WISHLIST,
-  COMPLETED,
+  PLAYING = "PLAYING",
+  PAUSED = "PAUSED",
+  PLANNED = "PLANNED",
+  WISHLIST = "WISHLIST",
+  COMPLETED = "COMPLETED",
 }
 
 export type { Game, User, IGDBGameAddition, IGDBSearchData };

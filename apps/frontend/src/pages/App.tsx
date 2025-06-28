@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import GameCard from "@/components/Game/GameCard";
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
-import type { Game } from "../utils/types";
+import { PossibleGameStates, type Game } from "../utils/types";
 import EmptyState from "@/components/EmptyState";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function App() {
   const [games, setGames] = useState<Game[] | null>(null);
+  const [tabValue, setTabValue] = useState<string>("PLAYING");
 
   useEffect(() => {
     api.fetchGames().then((res) => {
@@ -15,15 +17,55 @@ function App() {
     });
   }, []);
 
-  return (
-    <Layout>
-      <div className="container flex justify-center mx-auto">
-        {games && games.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 my-2">
-            {games?.map((v, k) => {
+  const GameGrid = () => {
+    if (games && games.filter((v) => v.currentState === tabValue).length > 0) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 my-2">
+          {games
+            ?.filter((v) => v.currentState === tabValue)
+            .map((v, k) => {
               return <GameCard key={k} game={v} />;
             })}
-          </div>
+        </div>
+      );
+    } else {
+      return <EmptyState hint="No games with this filter :(" />;
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="flex w-full items-center flex-col gap-6">
+        {games && games.length > 0 ? (
+          <Tabs
+            defaultValue={"PLAYING"}
+            onValueChange={(e: string) => setTabValue(e as PossibleGameStates)}
+          >
+            <div className="justify-center flex mt-6">
+              <TabsList>
+                <TabsTrigger value="PLAYING">Playing</TabsTrigger>
+                <TabsTrigger value="PAUSED">Paused</TabsTrigger>
+                <TabsTrigger value="PLANNED">Planned</TabsTrigger>
+                <TabsTrigger value="COMPLETED">Completed</TabsTrigger>
+                <TabsTrigger value="WISHLIST">Wishlisted</TabsTrigger>
+              </TabsList>
+            </div>
+            <TabsContent value="PLAYING">
+              <GameGrid />
+            </TabsContent>
+            <TabsContent value="PAUSED">
+              <GameGrid />
+            </TabsContent>
+            <TabsContent value="PLANNED">
+              <GameGrid />
+            </TabsContent>
+            <TabsContent value="WISHLIST">
+              <GameGrid />
+            </TabsContent>
+            <TabsContent value="COMPLETED">
+              <GameGrid />
+            </TabsContent>
+          </Tabs>
         ) : (
           <EmptyState
             hint="There's nothing here. Why not start your collection?"
@@ -32,6 +74,7 @@ function App() {
           />
         )}
       </div>
+      <div className="container flex justify-center mx-auto w-full"></div>
     </Layout>
   );
 }
