@@ -12,6 +12,12 @@ model Game {
   id           Int                @id @default(autoincrement())
   title        String
   coverId      String
+  screenshotId String
+  platforms    String[]
+  releaseDate  DateTime
+  genres       String[]
+  developer    String
+  publisher    String
   summary      String
   gameSlug     String
   reviewStars  Int?

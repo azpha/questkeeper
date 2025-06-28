@@ -46,7 +46,7 @@ async function GetGameBySlug(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken as string,
       },
-      body: `where slug = "${gameSlug}"; fields name,summary,cover.url,first_release_date,genres;`,
+      body: `where slug = "${gameSlug}"; fields name,summary,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name;`,
     });
 
     if (game.ok) {

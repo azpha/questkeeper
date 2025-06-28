@@ -3,6 +3,43 @@ interface JWTPayload {
   email: string;
 }
 
+interface IGDBGameAddition {
+  id: number;
+  cover: {
+    id: number;
+    url: string;
+  };
+  first_release_date: number;
+  genres: IGDBGenres[];
+  involved_companies: InvolvedCompanies[];
+  name: string;
+  platforms: Platforms[];
+  screenshots: Screenshots[];
+  summary: string;
+}
+
+type IGDBGenres = {
+  id: number;
+  name: string;
+};
+type InvolvedCompanies = {
+  id: number;
+  company: {
+    id: number;
+    name: string;
+  };
+  developer: boolean;
+  publisher: boolean;
+};
+type Platforms = {
+  id: number;
+  name: string;
+};
+type Screenshots = {
+  id: number;
+  url: string;
+};
+
 // express type override
 declare module "express" {
   interface Request {
@@ -10,4 +47,4 @@ declare module "express" {
   }
 }
 
-export type { JWTPayload };
+export type { JWTPayload, IGDBGameAddition };

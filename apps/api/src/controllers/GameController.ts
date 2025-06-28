@@ -3,6 +3,7 @@ import Database from "../services/Database";
 import Auth from "../services/Auth";
 import Environment from "../utils/Environment";
 import FetchUtils from "../utils/FetchUtils";
+import type { IGDBGameAddition } from "../utils/Types";
 import type { Request, Response, NextFunction } from "express";
 
 const IGDB_BASE_URL = "https://api.igdb.com/v4/";
@@ -46,6 +47,20 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
   try {
     const body = Schemas.games.create.parse(req.body);
 
+    const doesExist = await Database.game.findFirst({
+      where: {
+        gameSlug: body.gameSlug,
+      },
+    });
+
+    if (doesExist) {
+      res.status(409).json({
+        status: 409,
+        message: "Game already saved",
+      });
+      return;
+    }
+
     const twitchToken = await Auth.verifyAgainstTwitch();
     const igdbResponse = await fetch(IGDB_BASE_URL + "games", {
       method: "post",
@@ -54,34 +69,64 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Accept: "application/json",
       },
-      body: `where slug = "${body.gameSlug}"; fields slug,cover.url,name,summary;`,
+      body: `where slug = "${body.gameSlug}"; fields name,summary,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name;`,
     });
 
     if (igdbResponse.ok) {
       const igdbData = await igdbResponse.json();
-      const { cover, summary, name: title } = igdbData[0];
-
-      const coverId = await FetchUtils.FetchAndDownloadImage(
-        "http:" + cover.url
-      );
-
-      const game = await Database.game.create({
-        data: {
-          title,
-          coverId,
+      if (igdbData.length > 0) {
+        console.log(igdbData, body);
+        const {
+          cover,
           summary,
-          currentState: body.currentState,
-          gameSlug: body.gameSlug,
-          userId: req.user?.userId,
-          review: null,
-          reviewStars: null,
-        },
-      });
+          screenshots,
+          involved_companies,
+          platforms,
+          first_release_date,
+          genres,
+          name: title,
+        } = igdbData[0] as IGDBGameAddition;
 
-      res.status(200).json({
-        status: 200,
-        game,
-      });
+        const coverId = await FetchUtils.FetchAndDownloadImage(
+          "http:" + cover.url
+        );
+        const screenshotId = await FetchUtils.FetchAndDownloadImage(
+          "http:" + screenshots[0].url
+        );
+
+        const game = await Database.game.create({
+          data: {
+            title,
+            developer:
+              involved_companies.filter((v) => v.developer)[0].company.name ||
+              "Not Found",
+            publisher:
+              involved_companies.filter((v) => v.publisher)[0].company.name ||
+              "Not Found",
+            releaseDate: new Date(first_release_date),
+            platforms: platforms.map((v) => v.name),
+            genres: genres.map((v) => v.name),
+            screenshotId,
+            coverId,
+            summary,
+            currentState: body.currentState,
+            gameSlug: body.gameSlug,
+            userId: req.user?.userId,
+            review: null,
+            reviewStars: null,
+          },
+        });
+
+        res.status(200).json({
+          status: 200,
+          game,
+        });
+      } else {
+        res.status(404).json({
+          status: 404,
+          message: "That game wasn't found",
+        });
+      }
     } else {
       if (Environment!.NODE_ENV === "development") {
         const data = await igdbResponse.json();
