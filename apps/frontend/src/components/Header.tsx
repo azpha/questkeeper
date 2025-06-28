@@ -38,7 +38,11 @@ export default function Header() {
           </div>
           <div className="flex items-center gap-2">
             <Link to="/search">
-              <Button variant={"outline"} size="sm">
+              <Button
+                variant={"outline"}
+                className="hover:cursor-pointer"
+                size="sm"
+              >
                 Search Games
               </Button>
             </Link>
