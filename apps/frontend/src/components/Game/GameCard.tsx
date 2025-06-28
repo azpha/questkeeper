@@ -9,7 +9,7 @@ export default function GameCard({ game }: { game: Game }) {
         <GamePill type={game.currentState} />
 
         <img
-          src={`/api/games/cover/${game.coverId}`}
+          src={`/api/games/image/${game.coverId}`}
           alt={game.title}
           className="object-cover rounded-t-sm"
         />

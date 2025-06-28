@@ -11,6 +11,27 @@ async function fetchGames() {
     } else throw new Error("Failed to fetch games!");
   });
 }
+async function fetchGame(slug: string) {
+  return fetch("/api/games/" + slug, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.game as Game;
+    } else throw new Error("Failed to fetch game!");
+  });
+}
+async function updateGame(id: number, body: object) {
+  return fetch("/api/games/" + id, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+  }).then((res) => res.ok);
+}
 
 // authentication
 async function fetchCurrentUser() {
@@ -45,6 +66,8 @@ async function logUserOut() {
 
 export default {
   fetchGames,
+  fetchGame,
+  updateGame,
   logUserIn,
   fetchCurrentUser,
   logUserOut,
