@@ -17,7 +17,7 @@ async function SearchForGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken as string,
       },
-      body: `search "${gameName}"; where rating > 75; fields name,slug,summary;`,
+      body: `search "${gameName}"; fields name,slug,summary;`,
     });
 
     if (game.ok) {
