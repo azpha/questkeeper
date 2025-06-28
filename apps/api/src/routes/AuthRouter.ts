@@ -4,7 +4,7 @@ import AuthController from "../controllers/AuthController";
 
 const router = Router();
 
-router.get("/@me", AuthController.GetCurrentUser);
+router.get("/@me", AuthService.verifyJwt, AuthController.GetCurrentUser);
 router.post("/register", AuthController.RegisterAccount);
 router.post("/login", AuthController.LogIn);
 router.delete("/logout", AuthService.verifyJwt, AuthController.LogOut);

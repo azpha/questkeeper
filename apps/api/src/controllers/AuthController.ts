@@ -106,10 +106,11 @@ async function LogIn(req: Request, res: Response, next: NextFunction) {
 
 async function LogOut(req: Request, res: Response, next: NextFunction) {
   try {
-    res.setHeader(
-      "Set-Cookie",
-      `authToken=; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=0;`
-    );
+    const cookie =
+      Environment!.NODE_ENV === "development"
+        ? `authToken=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0;`
+        : `authToken=; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=0;`;
+    res.setHeader("Set-Cookie", cookie);
 
     res.status(200).json({
       status: 200,
@@ -121,24 +122,28 @@ async function LogOut(req: Request, res: Response, next: NextFunction) {
 
 async function GetCurrentUser(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = await Database.user.findFirst({
-      where: {
-        id: req.user?.userId,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        games: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    if (user) {
+    if (req.user) {
+      const user = await Database.user.findFirst({
+        where: {
+          id: req.user?.userId,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          games: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
       res.status(200).json({
         status: 200,
         user,
+      });
+    } else {
+      res.status(401).json({
+        status: 401,
+        message: "Invalid auth",
       });
     }
   } catch (e) {
