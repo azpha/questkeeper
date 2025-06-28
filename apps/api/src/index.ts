@@ -9,7 +9,6 @@ import { ZodError } from "zod";
 import path from "path";
 
 // routes
-import SettingsRouter from "./routes/SettingsRouter";
 import AuthRouter from "./routes/AuthRouter";
 import IgdbRouter from "./routes/IgdbRouter";
 import GamesRouter from "./routes/GameRouter";
@@ -43,7 +42,6 @@ if (Environment!.NODE_ENV !== "development") {
 }
 
 // routes
-app.use("/api/settings", SettingsRouter);
 app.use("/api/auth", AuthRouter);
 app.use("/api/igdb", IgdbRouter);
 app.use("/api/games", GamesRouter);

@@ -1,30 +1,16 @@
 import { z } from "zod";
 
 const schemas = {
-  environment: z
-    .object({
-      DATABASE_URL: z.string().url(),
-      JWT_SECRET: z.string().min(32),
-      HOSTNAME: z.string().url().optional(),
-      AUTH_ENABLED: z.preprocess(
-        (val) => (val === "false" ? false : Boolean(val)),
-        z.boolean().default(true)
-      ),
-      NODE_ENV: z
-        .enum(["development", "test", "production"])
-        .default("development"),
-      IGDB_CLIENT_ID: z.string().min(1),
-      IGDB_CLIENT_SECRET: z.string().min(1),
-    })
-    .superRefine((data, ctx) => {
-      if (data.AUTH_ENABLED && !data.HOSTNAME) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "HOSTNAME is required when AUTH_ENABLED is truthy",
-          path: ["HOSTNAME"],
-        });
-      }
-    }),
+  environment: z.object({
+    DATABASE_URL: z.string().url(),
+    JWT_SECRET: z.string().min(32),
+    HOSTNAME: z.string().url().optional(),
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
+    IGDB_CLIENT_ID: z.string().min(1),
+    IGDB_CLIENT_SECRET: z.string().min(1),
+  }),
   auth: {
     register: z.object({
       email: z.string().email(),
