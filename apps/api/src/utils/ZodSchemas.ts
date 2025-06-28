@@ -3,6 +3,7 @@ import { z } from "zod";
 const schemas = {
   environment: z.object({
     DATABASE_URL: z.string().url(),
+    REDIS_URL: z.string().url().optional(),
     JWT_SECRET: z.string().min(32),
     HOSTNAME: z.string().url().optional(),
     NODE_ENV: z

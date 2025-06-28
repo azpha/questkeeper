@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"pnpm --filter api run dev\" \"pnpm --filter frontend run dev\"",
     "build": "pnpm --filter api run build && pnpm --filter frontend run build",
-    "start": "pnpm --filter api run db:deploy && pnpm --filter api run start"
+    "start": "pnpm --filter api run db:deploy && pnpm --filter api run db:generate && pnpm --filter api run start"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,53 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+  questkeeper_images:
+
+services:
+  questkeeper:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      # images are downloaded from IGDB when adding a game to your library
+      # this persists them to disk so they aren't lost when restarting the
+      # contianer
+      - questkeeper_images:/usr/src/app/apps/api/files
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      # do not change unless you know what you're doing
+      - DATABASE_URL=postgresql://questkeeper:questkeeper@postgres:5432/questkeeper
+      - REDIS_URL=redis://redis:6379
+      # do not change unless you know what you're doing
+
+      - JWT_SECRET=aaaaaaabbbbbbbbbbbbcccccccccccdddddddddeeeeeeeffffffffggggggg
+      - IGDB_CLIENT_ID=mysupercoolclientidformytwitchapp
+      - HOSTNAME=questkeeper.local
+      - IGDB_CLIENT_SECRET=mysupercoolclientsecretformytwitchapp
+
+
+  # do not change unless you know what you're doing
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=questkeeper
+      - POSTGRES_PASSWORD=questkeeper
+      - POSTGRES_DB=questkeeper
