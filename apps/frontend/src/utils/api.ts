@@ -83,6 +83,17 @@ async function deleteGame(id: number) {
     credentials: "include",
   }).then((res) => res.ok);
 }
+async function getAddedSlugs() {
+  return fetch("/api/games/added", {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.slugs as string[];
+    } else throw new Error("Failed to fetch added game slugs!");
+  });
+}
 
 // authentication
 async function fetchCurrentUser() {
@@ -142,6 +153,7 @@ export default {
   fetchGames,
   fetchGame,
   fetchGameDataFromIgdb,
+  getAddedSlugs,
   searchIgdb,
   updateGame,
   createGame,

@@ -7,7 +7,9 @@ import type { IGDBSearchData } from "@/utils/types";
 
 export default function Search() {
   const [results, setResults] = useState<IGDBSearchData[] | null>(null);
+  const [addedGames, setAddedGames] = useState<string[] | null>(null);
   const [query, setQuery] = useState<string>("");
+
   const debounced = useCallback(
     debounce((v: string) => {
       setQuery(v);
@@ -24,6 +26,41 @@ export default function Search() {
       });
     }
   }, [query]);
+  useEffect(() => {
+    api.getAddedSlugs().then((res) => {
+      if (res) {
+        setAddedGames(res);
+      }
+    });
+  }, []);
+
+  const ExistingGames = () => {
+    return (
+      <div>
+        <div className="my-6">
+          <h1 className="text-2xl font-bold">Already added</h1>
+          <p>Games in your library matching this search query</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {results
+            ?.filter((v) => addedGames?.includes(v.slug))
+            .map((v, k) => {
+              return (
+                <Link to={`/game/${v.slug}`} key={k}>
+                  <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
+                    <h1 className="font-bold text-2xl whitespace-nowrap truncate">
+                      {v.name}
+                    </h1>
+                    <p className="whitespace-nowrap truncate">{v.summary}</p>
+                  </div>
+                </Link>
+              );
+            })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -51,19 +88,30 @@ export default function Search() {
         )}
 
         {results && results.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {results.map((v, k) => {
-              return (
-                <Link to={`/search/${v.slug}`} key={k}>
-                  <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
-                    <h1 className="font-bold text-2xl whitespace-nowrap truncate">
-                      {v.name}
-                    </h1>
-                    <p className="whitespace-nowrap truncate">{v.summary}</p>
-                  </div>
-                </Link>
-              );
-            })}
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {results
+                .filter((v) => !addedGames?.includes(v.slug))
+                .map((v, k) => {
+                  return (
+                    <Link to={`/search/${v.slug}`} key={k}>
+                      <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
+                        <h1 className="font-bold text-2xl whitespace-nowrap truncate">
+                          {v.name}
+                        </h1>
+                        <p className="whitespace-nowrap truncate">
+                          {v.summary}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+            </div>
+
+            <div className="my-2">
+              {results.filter((v) => addedGames?.includes(v.slug)).length >
+                0 && <ExistingGames />}
+            </div>
           </div>
         ) : !query || query === "" ? (
           <div className="text-center">

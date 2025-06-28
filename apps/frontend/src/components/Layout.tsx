@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   }, [auth]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-neutral-900 text-white">
       <Header />
       {children}
     </div>
