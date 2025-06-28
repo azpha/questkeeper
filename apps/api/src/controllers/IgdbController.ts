@@ -34,9 +34,9 @@ async function SearchForGame(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-async function GetGameById(req: Request, res: Response, next: NextFunction) {
+async function GetGameBySlug(req: Request, res: Response, next: NextFunction) {
   try {
-    const gameId = Schemas.igdb.getById.parse(req.params.id);
+    const gameSlug = Schemas.igdb.getBySlug.parse(req.params.slug);
 
     const twitchToken = await Auth.verifyAgainstTwitch();
     const game = await fetch(IGDB_BASE_URL + "games", {
@@ -46,7 +46,7 @@ async function GetGameById(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken as string,
       },
-      body: `where id = ${gameId}; fields name,summary,cover.url,first_release_date,genres;`,
+      body: `where slug = "${gameSlug}"; fields name,summary,cover.url,first_release_date,genres;`,
     });
 
     if (game.ok) {
@@ -66,5 +66,5 @@ async function GetGameById(req: Request, res: Response, next: NextFunction) {
 
 export default {
   SearchForGame,
-  GetGameById,
+  GetGameBySlug,
 };

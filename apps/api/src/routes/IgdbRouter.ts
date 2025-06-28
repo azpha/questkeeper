@@ -4,6 +4,6 @@ import IgdbController from "../controllers/IgdbController";
 const router = Router();
 
 router.get("/search", IgdbController.SearchForGame);
-router.get("/game/:id", IgdbController.GetGameById);
+router.get("/game/:slug", IgdbController.GetGameBySlug);
 
 export default router;
