@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { debounce } from "lodash";
 import type { IGDBSearchData } from "@/utils/types";
@@ -9,23 +9,19 @@ export default function Search() {
   const [results, setResults] = useState<IGDBSearchData[] | null>(null);
   const [addedGames, setAddedGames] = useState<string[] | null>(null);
   const [query, setQuery] = useState<string>("");
+  const [params] = useSearchParams();
 
   const debounced = useCallback(
-    debounce((v: string) => {
-      setQuery(v);
-    }, 500),
-    []
-  );
-
-  useEffect(() => {
-    if (query && query !== "") {
+    debounce((query: string) => {
       api.searchIgdb(query).then((res) => {
         if (res) {
           setResults(res);
         }
       });
-    }
-  }, [query]);
+    }, 500),
+    [query]
+  );
+
   useEffect(() => {
     api.getAddedSlugs().then((res) => {
       if (res) {
@@ -33,6 +29,13 @@ export default function Search() {
       }
     });
   }, []);
+  useEffect(() => {
+    const q = params.get("q");
+    if (q) {
+      setQuery(q);
+      debounced(q);
+    }
+  }, [params.get("q")]);
 
   const ExistingGames = () => {
     return (
@@ -47,7 +50,7 @@ export default function Search() {
             ?.filter((v) => addedGames?.includes(v.slug))
             .map((v, k) => {
               return (
-                <Link to={`/game/${v.slug}`} key={k}>
+                <Link state={{ query }} to={`/game/${v.slug}`} key={k}>
                   <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                       {v.name}
@@ -71,7 +74,11 @@ export default function Search() {
               <input
                 type="text"
                 placeholder="Search for a game.."
-                onChange={(e) => debounced(e.target.value)}
+                defaultValue={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  debounced(e.target.value);
+                }}
                 className="bg-black text-white rounded-lg w-full p-2"
               />
             </div>
@@ -94,7 +101,7 @@ export default function Search() {
                 .filter((v) => !addedGames?.includes(v.slug))
                 .map((v, k) => {
                   return (
-                    <Link to={`/search/${v.slug}`} key={k}>
+                    <Link state={{ query }} to={`/search/${v.slug}`} key={k}>
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                         <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                           {v.name}

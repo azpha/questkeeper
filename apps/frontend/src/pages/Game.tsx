@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import api from "@/utils/api";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,8 +21,10 @@ export default function Game() {
 
   // hooks
   const params = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const isSearchPage = useMemo(() => params.type === "search", [params]);
+  const hasBackState = useMemo(() => location.state?.query, [location.state]);
 
   useEffect(() => {
     if (params.slug && params.type) {
@@ -91,6 +93,11 @@ export default function Game() {
     <Layout>
       {game || igdbGame ? (
         <div className="container mx-auto px-4 py-8">
+          {hasBackState && (
+            <Link to={`/search?q=${location.state.query}`}>
+              <h1 className="font-semibold mb-4">Back to search</h1>
+            </Link>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <div className="lg:col-span-2">
               <div className="relative rounded-lg overflow-hidden mb-4">

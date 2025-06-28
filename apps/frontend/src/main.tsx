@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./components/contexts/AuthContext.tsx";
+import { scan } from "react-scan";
 import "./assets/main.css";
 
 // pages
@@ -11,6 +12,9 @@ import Register from "./pages/Register.tsx";
 import Game from "./pages/Game.tsx";
 import Search from "./pages/Search.tsx";
 
+scan({
+  enabled: process.env.NODE_ENV !== "production",
+});
 const router = createBrowserRouter([
   {
     path: "/",
