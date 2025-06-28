@@ -13,7 +13,7 @@ export default function Login() {
     if (auth.hasAuthLoaded && auth.currentUser) {
       navigate("/");
     }
-  }, []);
+  }, [auth]);
   useEffect(() => {
     if (error) {
       setTimeout(() => {
@@ -36,6 +36,7 @@ export default function Login() {
         password as string
       );
       if (loginResult) {
+        auth.loadUserAuth();
         navigate("/");
       } else {
         setError("Something went wrong!");

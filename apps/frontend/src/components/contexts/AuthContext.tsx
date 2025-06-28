@@ -22,17 +22,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [hasAuthLoaded, setHasAuthLoaded] = useState<boolean>(false);
 
   const loadUserAuth = async () => {
-    api
-      .fetchCurrentUser()
-      .then((res) => setCurrentUser(res))
-      .catch(() => setCurrentUser(null));
-
-    setHasAuthLoaded(true);
+    try {
+      const user = await api.fetchCurrentUser();
+      if (user) setCurrentUser(user);
+    } catch {
+      setCurrentUser(null);
+    } finally {
+      setHasAuthLoaded(true);
+    }
   };
 
   useEffect(() => {
-    loadUserAuth();
-  }, []);
+    if (!currentUser) {
+      loadUserAuth();
+    }
+  }, [currentUser]);
 
   const isUserAuthenticated = useMemo(() => !!currentUser, [currentUser]);
   const invalidateAuth = async () => {
