@@ -9,7 +9,6 @@ import App from "./pages/App.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Game from "./pages/Game.tsx";
-import SearchGamePage from "./pages/SearchGamePage.tsx";
 import Search from "./pages/Search.tsx";
 
 const router = createBrowserRouter([
@@ -26,12 +25,8 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/game/:slug",
+    path: "/:type/:slug",
     element: <Game />,
-  },
-  {
-    path: "/search/:slug",
-    element: <SearchGamePage />,
   },
   {
     path: "/search",
