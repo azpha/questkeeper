@@ -9,21 +9,22 @@ datasource db {
 }
 
 model Game {
-  id            Int                @id @default(autoincrement())
-  title         String
-  coverId       String
-  screenshotIds String[]
-  platforms     String[]
-  releaseDate   DateTime
-  storyline     String?
-  genres        String[]
-  developer     String
-  publisher     String
-  summary       String
-  gameSlug      String
-  reviewStars   Int?
-  review        String?
-  currentState  PossibleGameStates
+  id             Int                @id @default(autoincrement())
+  title          String
+  coverId        String
+  screenshotIds  String[]
+  platforms      String[]
+  releaseDate    DateTime
+  storyline      String?
+  genres         String[]
+  developer      String
+  publisher      String
+  summary        String
+  gameSlug       String
+  matchedSteamId Int?
+  reviewStars    Int?
+  review         String?
+  currentState   PossibleGameStates
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -36,6 +37,7 @@ model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
   passwordHash String
+  steamId      String?
   name         String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

@@ -89,7 +89,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Accept: "application/json",
       },
-      body: `where slug = "${body.gameSlug}"; fields name,summary,storyline,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name;`,
+      body: `where slug = "${body.gameSlug}"; fields name,summary,storyline,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name,websites.url;`,
     });
 
     if (igdbResponse.ok) {
@@ -105,8 +105,21 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
           storyline,
           first_release_date,
           genres,
+          websites,
           name: title,
         } = igdbData[0] as IGDBGameAddition;
+
+        let steamId;
+        const steamUrlMatches = websites.filter((v) =>
+          v.url.includes("steampowered.com")
+        );
+        if (steamUrlMatches.length > 0) {
+          const id =
+            steamUrlMatches[0].url.split("/")[
+              steamUrlMatches[0].url.split("/").length - 1
+            ];
+          steamId = id;
+        }
 
         let screenshotIds = [];
         const coverId = await FetchUtils.FetchAndDownloadImage(
@@ -135,6 +148,8 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
             screenshotIds,
             coverId,
             summary,
+            matchedSteamId:
+              steamId && !isNaN(parseInt(steamId)) ? parseInt(steamId) : null,
             currentState: body.currentState,
             gameSlug: body.gameSlug,
             userId: req.user?.userId,

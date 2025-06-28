@@ -30,6 +30,7 @@ const schemas = {
   },
   games: {
     id: z.coerce.number(),
+    steamIds: z.string().min(1),
     getCover: z.string().min(1),
     create: z.object({
       gameSlug: z.string().min(1),

@@ -17,6 +17,7 @@ interface IGDBGameAddition {
   platforms: Platforms[];
   screenshots: Screenshots[];
   summary: string;
+  websites: Websites[];
 }
 
 type IGDBGenres = {
@@ -37,6 +38,10 @@ type Platforms = {
   name: string;
 };
 type Screenshots = {
+  id: number;
+  url: string;
+};
+type Websites = {
   id: number;
   url: string;
 };

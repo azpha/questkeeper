@@ -17,11 +17,12 @@ async function SearchForGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken as string,
       },
-      body: `search "${gameName}"; fields name,slug,summary;`,
+      body: `search "${gameName}"; fields name,slug,summary,websites.url;`,
     });
 
     if (game.ok) {
       const data = await game.json();
+      console.log(data[0].websites);
       res.status(200).json({
         status: 200,
         data,
@@ -71,8 +72,51 @@ async function GetGameBySlug(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+async function SearchForSteamId(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    let steamIdOrIds = Schemas.games.steamIds.parse(req.query.ids);
+
+    let filterString = ``;
+    let steamIdsAsArray: string[] = [...steamIdOrIds.split(",")];
+
+    if (steamIdsAsArray.length > 0) {
+      for (const steamId of steamIdsAsArray) {
+        if (filterString === "") {
+          filterString += `where websites.url = *"https://store.steampowered.com/app/${steamId}" `;
+        } else {
+          filterString += `| websites.url = *"https://store.steampowered.com/app/${steamId}" `;
+        }
+      }
+    }
+    filterString += "; fields name;";
+
+    const twitchToken = await Auth.verifyAgainstTwitch();
+    const igdbResponse = await fetch(IGDB_BASE_URL + "games", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Client-ID": Environment!.IGDB_CLIENT_ID,
+        Authorization: twitchToken,
+      },
+      body: filterString,
+    });
+
+    const data = await igdbResponse.json();
+    res.status(200).json({
+      status: 200,
+      data,
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 export default {
   SearchForGame,
   GetGameBySlug,
+  SearchForSteamId,
 };
