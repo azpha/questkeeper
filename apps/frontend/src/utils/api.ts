@@ -90,6 +90,29 @@ async function fetchCurrentUser() {
     } else throw new Error("Failed to fetch current user!");
   });
 }
+async function registerAccount(email: string, password: string, name: string) {
+  return fetch("/api/auth/register", {
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      name,
+    }),
+  }).then((res) => res.ok);
+}
+async function checkRegistrationEligibility() {
+  return fetch("/api/auth/eligibility", {
+    method: "get",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.eligible;
+    } else throw new Error("Failed to check eligibility!");
+  });
+}
 async function logUserIn(username: string, password: string) {
   return fetch("/api/auth/login", {
     method: "post",
@@ -116,7 +139,9 @@ export default {
   searchIgdb,
   updateGame,
   createGame,
+  registerAccount,
   logUserIn,
   fetchCurrentUser,
+  checkRegistrationEligibility,
   logUserOut,
 };

@@ -34,10 +34,11 @@ async function RegisterAccount(
       { expiresIn: "48h" }
     );
 
-    res.setHeader(
-      "Set-Cookie",
-      `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=172800;`
-    );
+    const cookie =
+      Environment!.NODE_ENV === "development"
+        ? `authToken=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=172800;`
+        : `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=172800;`;
+    res.setHeader("Set-Cookie", cookie);
 
     res.status(200).json({
       status: 200,
