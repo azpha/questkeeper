@@ -9,20 +9,20 @@ datasource db {
 }
 
 model Game {
-  id           Int                @id @default(autoincrement())
-  title        String
-  coverId      String
-  screenshotId String
-  platforms    String[]
-  releaseDate  DateTime
-  genres       String[]
-  developer    String
-  publisher    String
-  summary      String
-  gameSlug     String
-  reviewStars  Int?
-  review       String?
-  currentState PossibleGameStates
+  id            Int                @id @default(autoincrement())
+  title         String
+  coverId       String
+  screenshotIds String[]
+  platforms     String[]
+  releaseDate   DateTime
+  genres        String[]
+  developer     String
+  publisher     String
+  summary       String
+  gameSlug      String
+  reviewStars   Int?
+  review        String?
+  currentState  PossibleGameStates
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

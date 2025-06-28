@@ -87,12 +87,16 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
           name: title,
         } = igdbData[0] as IGDBGameAddition;
 
+        let screenshotIds = [];
         const coverId = await FetchUtils.FetchAndDownloadImage(
           "http:" + cover.url
         );
-        const screenshotId = await FetchUtils.FetchAndDownloadImage(
-          "http:" + screenshots[0].url
-        );
+        for (const screenshot of screenshots) {
+          const id = await FetchUtils.FetchAndDownloadImage(
+            "http:" + screenshot.url
+          );
+          screenshotIds.push(id);
+        }
 
         const game = await Database.game.create({
           data: {
@@ -106,7 +110,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
             releaseDate: new Date(first_release_date),
             platforms: platforms.map((v) => v.name),
             genres: genres.map((v) => v.name),
-            screenshotId,
+            screenshotIds,
             coverId,
             summary,
             currentState: body.currentState,
