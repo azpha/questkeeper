@@ -4,6 +4,7 @@ import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { debounce } from "lodash";
 import type { IGDBSearchData } from "@/utils/types";
+import EmptyState from "@/components/EmptyState";
 
 export default function Search() {
   const [results, setResults] = useState<IGDBSearchData[] | null>(null);
@@ -127,10 +128,7 @@ export default function Search() {
             <p>Search for a game to add to your library.</p>
           </div>
         ) : (
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">Uh-oh!</h1>
-            <p>Nothing was found with that term :(</p>
-          </div>
+          <EmptyState hint="Nothing was found with that term :(" />
         )}
       </div>
     </Layout>

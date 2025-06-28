@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 import GameCard from "@/components/Game/GameCard";
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
 import type { Game } from "../utils/types";
+import EmptyState from "@/components/EmptyState";
 
 function App() {
   const [games, setGames] = useState<Game[] | null>(null);
@@ -25,24 +25,11 @@ function App() {
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center">
-            <div className="my-6">
-              <h1 className="text-2xl font-bold">
-                Unlimited games, but no games?
-              </h1>
-              <p>There's nothing here. Why not start your collection?</p>
-              <div className="text-center my-2">
-                <Link to="/search">
-                  <button
-                    type="button"
-                    className="hover:cursor-pointer bg-white text-black rounded-lg p-2 font-semibold"
-                  >
-                    Take me awaaaayyyy
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
+          <EmptyState
+            hint="There's nothing here. Why not start your collection?"
+            buttonLabel="Take me awaaaayyyy (to search)"
+            to="/search"
+          />
         )}
       </div>
     </Layout>
