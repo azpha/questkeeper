@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import Layout from "@/components/Layout";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,18 +10,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Game } from "@/utils/types";
+import type { IGDBGameAddition, PossibleGameStates } from "@/utils/types";
 
-export default function Game() {
-  const [game, setGame] = useState<Game | null>(null);
+export default function SearchGamePage() {
+  const [game, setGame] = useState<IGDBGameAddition | null>(null);
   const [error, setError] = useState<string>("");
   const [hasLoaded, setHasLoaded] = useState<boolean>(false);
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (params.slug) {
-      api.fetchGame(params.slug).then((res) => {
-        console.log(res);
+      api.fetchGameDataFromIgdb(params.slug).then((res) => {
         if (res) {
           setGame(res);
         }
@@ -32,17 +32,15 @@ export default function Game() {
   }, []);
 
   // update funcs
-  const handleStatusUpdate = (status: string) => {
-    if (game) {
-      api
-        .updateGame(game.id, {
-          currentState: status,
-        })
-        .then((res) => {
-          if (!res) {
-            setError("Failed to update!");
-          }
-        });
+  const handleCreation = (status: PossibleGameStates) => {
+    if (params.slug) {
+      api.createGame(params.slug, status).then((res) => {
+        if (!res) {
+          setError("Failed to update!");
+        } else {
+          navigate(`/game/${params.slug}`);
+        }
+      });
     }
   };
 
@@ -54,20 +52,21 @@ export default function Game() {
             <div className="lg:col-span-2">
               <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
                 <img
-                  src={`/api/games/image/${game?.coverId}`}
-                  alt={game?.title}
+                  src={`http:${game?.cover.url.replace("t_thumb", "t_cover_big")}`}
+                  alt={game?.name}
                 />
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {game.screenshotIds.map((v, k) => {
+                {game.screenshots.map((v, k) => {
+                  console.log(v);
                   return (
                     <div
                       key={k}
                       className="aspect-video relative rounded overflow-hidden"
                     >
                       <img
-                        src={`/api/games/image/${v}`}
-                        alt={game?.title + " Screenshot"}
+                        src={`http:${v.url.replace("t_thumb", "t_cover_big")}`}
+                        alt={game?.name + " Screenshot"}
                         className="hover:scale-105 transition-transform cursor-pointer"
                       />
                     </div>
@@ -78,13 +77,13 @@ export default function Game() {
 
             <div className="space-y-6">
               <div>
-                <h1 className="font-semibold text-3xl mb-2">{game.title}</h1>
+                <h1 className="font-semibold text-3xl mb-2">{game.name}</h1>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1">
                     <span className="font-semibold">
                       {game.genres.length > 1
-                        ? game.genres.join(", ")
-                        : game.genres[0]}
+                        ? game.genres.map((v) => v.name).join(", ")
+                        : game.genres[0].name}
                     </span>
                   </div>
                 </div>
@@ -93,10 +92,11 @@ export default function Game() {
 
               <Card className="bg-zinc-600 text-white">
                 <CardHeader>
-                  <CardTitle className="text-lg">Update Status</CardTitle>
+                  <CardTitle className="text-lg">Add to library</CardTitle>
                   <Select
-                    defaultValue={game.currentState as unknown as string}
-                    onValueChange={handleStatusUpdate}
+                    onValueChange={(v: string) =>
+                      handleCreation(v as unknown as PossibleGameStates)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder={"Select status"} />
@@ -119,16 +119,27 @@ export default function Game() {
                   <span className="text-sm">
                     Released:{" "}
                     <span className="font-semibold">
-                      {new Date(game.releaseDate).toLocaleDateString()}
+                      {new Date(game.first_release_date).toLocaleDateString()}
                     </span>
                   </span>
                   <span className="text-sm">
                     Developer:{" "}
-                    <span className="font-semibold">{game.developer}</span>
+                    <span className="font-semibold">
+                      {
+                        game.involved_companies.filter((v) => v.developer)[0]
+                          .company.name
+                      }
+                    </span>
                   </span>
                   <span className="text-sm">
                     Publisher:{" "}
-                    <span className="font-semibold">{game.publisher}</span>
+                    <span className="font-semibold">
+                      {" "}
+                      {
+                        game.involved_companies.filter((v) => v.publisher)[0]
+                          .company.name
+                      }
+                    </span>
                   </span>
                 </CardHeader>
               </Card>

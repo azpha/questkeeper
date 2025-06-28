@@ -1,4 +1,10 @@
-import type { Game, User } from "./types";
+import type {
+  Game,
+  IGDBGameAddition,
+  IGDBSearchData,
+  PossibleGameStates,
+  User,
+} from "./types";
 
 async function fetchGames() {
   return fetch("/api/games", {
@@ -22,6 +28,28 @@ async function fetchGame(slug: string) {
     } else throw new Error("Failed to fetch game!");
   });
 }
+async function fetchGameDataFromIgdb(slug: string) {
+  return fetch("/api/igdb/game/" + slug, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.game as IGDBGameAddition;
+    } else throw new Error("Failed to fetch game!");
+  });
+}
+async function searchIgdb(query: string) {
+  return fetch("/api/igdb/search?q=" + query, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.data as IGDBSearchData[];
+    } else throw new Error("Failed to search!");
+  });
+}
 async function updateGame(id: number, body: object) {
   return fetch("/api/games/" + id, {
     method: "PATCH",
@@ -31,6 +59,23 @@ async function updateGame(id: number, body: object) {
     },
     body: JSON.stringify(body),
   }).then((res) => res.ok);
+}
+async function createGame(gameSlug: string, currentState: PossibleGameStates) {
+  return fetch("/api/games/create", {
+    method: "post",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      gameSlug,
+      currentState,
+    }),
+  }).then((res) => {
+    if (res.ok) {
+      return res.ok;
+    } else throw new Error("Failed to create game!");
+  });
 }
 
 // authentication
@@ -67,7 +112,10 @@ async function logUserOut() {
 export default {
   fetchGames,
   fetchGame,
+  fetchGameDataFromIgdb,
+  searchIgdb,
   updateGame,
+  createGame,
   logUserIn,
   fetchCurrentUser,
   logUserOut,

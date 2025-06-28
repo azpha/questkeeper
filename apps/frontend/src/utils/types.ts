@@ -16,6 +16,50 @@ type Game = {
   currentState: PossibleGameStates;
 };
 
+interface IGDBGameAddition {
+  id: number;
+  cover: {
+    id: number;
+    url: string;
+  };
+  first_release_date: number;
+  genres: IGDBGenres[];
+  storyline: string;
+  involved_companies: InvolvedCompanies[];
+  name: string;
+  platforms: Platforms[];
+  screenshots: Screenshots[];
+  summary: string;
+}
+interface IGDBSearchData {
+  id: number;
+  name: string;
+  slug: string;
+  summary: string;
+}
+
+type IGDBGenres = {
+  id: number;
+  name: string;
+};
+type InvolvedCompanies = {
+  id: number;
+  company: {
+    id: number;
+    name: string;
+  };
+  developer: boolean;
+  publisher: boolean;
+};
+type Platforms = {
+  id: number;
+  name: string;
+};
+type Screenshots = {
+  id: number;
+  url: string;
+};
+
 type User = {
   email: string;
   userId: number;
@@ -29,5 +73,5 @@ enum PossibleGameStates {
   COMPLETED,
 }
 
-export type { Game, User };
+export type { Game, User, IGDBGameAddition, IGDBSearchData };
 export { PossibleGameStates };
