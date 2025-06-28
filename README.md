@@ -1,17 +1,19 @@
-# game-tracker
+# questkeeper
 
 A self-hosted solution for hosting your game wishlist or currently playing stats.
+
+## Setup
 
 ## Development
 
 This guide is the steps you need to take to run this app locally.
 
-### Setup
+### Environment Setup
 
 This repository uses PNPM. To get started, clone the repository & setup PNPM on your environment.
 
 ```
-git clone https://github.com/azpha/game-tracker
+git clone https://github.com/azpha/questkeeper
 npm i -g corepack
 corepack enable
 pnpm i

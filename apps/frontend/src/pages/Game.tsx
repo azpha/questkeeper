@@ -52,19 +52,16 @@ export default function Game() {
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <div className="lg:col-span-2">
-              <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
+              <div className="relative rounded-lg overflow-hidden mb-4">
                 <img
                   src={`/api/games/image/${game?.coverId}`}
                   alt={game?.title}
                 />
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {game.screenshotIds.map((v, k) => {
+                {game.screenshotIds.slice(0, 6).map((v, k) => {
                   return (
-                    <div
-                      key={k}
-                      className="aspect-video relative rounded overflow-hidden"
-                    >
+                    <div key={k} className="relative rounded overflow w-full">
                       <img
                         src={`/api/games/image/${v}`}
                         alt={game?.title + " Screenshot"}

@@ -12,9 +12,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <Link to="/">
-              <h1 className="text-white text-2xl font-semibold">
-                Game Tracker
-              </h1>
+              <h1 className="text-white text-2xl font-semibold">QuestKeeper</h1>
             </Link>
             {auth.currentUser ? (
               <p

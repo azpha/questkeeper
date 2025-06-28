@@ -5,8 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "studio": "pnpm exec prisma studio",
-    "build": "tsc"
+    "db:studio": "prisma studio",
+    "db:deploy": "prisma migrate deploy",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
