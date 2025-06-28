@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import Layout from "@/components/Layout";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Game, IGDBGameAddition, PossibleGameStates } from "@/utils/types";
+import { Button } from "@/components/ui/button";
 
 export default function Game() {
   const [game, setGame] = useState<Game | null>(null);
@@ -74,6 +75,17 @@ export default function Game() {
         });
     }
   };
+  const handleDeletion = () => {
+    if (params.slug && params.type === "game" && game) {
+      api.deleteGame(game.id).then((res) => {
+        if (!res) {
+          setError("Failed to delete!");
+        } else {
+          navigate(`/`);
+        }
+      });
+    }
+  };
 
   return (
     <Layout>
@@ -116,7 +128,7 @@ export default function Game() {
                       return (
                         <div
                           key={k}
-                          className="aspect-video relative rounded overflow-hidden"
+                          className="relative rounded overflow-hidden max-w-fit"
                         >
                           <img
                             src={`http:${v.url.replace("t_thumb", "t_cover_big")}`}
@@ -186,6 +198,16 @@ export default function Game() {
                   </Select>
                   {error && <p className="text-red-500">{error}</p>}
                 </CardHeader>
+                {!isSearchPage && (
+                  <CardContent>
+                    <h1 className="text-lg font-semibold">Delete</h1>
+                    <div className="my-2">
+                      <Button onClick={handleDeletion} variant="destructive">
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                )}
               </Card>
 
               <Card className="bg-zinc-600 text-white">

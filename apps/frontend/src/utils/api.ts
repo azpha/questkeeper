@@ -77,6 +77,12 @@ async function createGame(gameSlug: string, currentState: PossibleGameStates) {
     } else throw new Error("Failed to create game!");
   });
 }
+async function deleteGame(id: number) {
+  return fetch("/api/games/" + id, {
+    method: "delete",
+    credentials: "include",
+  }).then((res) => res.ok);
+}
 
 // authentication
 async function fetchCurrentUser() {
@@ -139,6 +145,7 @@ export default {
   searchIgdb,
   updateGame,
   createGame,
+  deleteGame,
   registerAccount,
   logUserIn,
   fetchCurrentUser,
