@@ -228,7 +228,7 @@ export default function Game() {
                         : isSearchPage &&
                           igdbGame &&
                           new Date(
-                            igdbGame?.first_release_date
+                            igdbGame?.first_release_date * 1000
                           ).toLocaleDateString()}
                     </span>
                   </span>

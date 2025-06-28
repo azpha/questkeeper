@@ -128,7 +128,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
             publisher:
               involved_companies.filter((v) => v.publisher)[0].company.name ||
               "Not Found",
-            releaseDate: new Date(first_release_date),
+            releaseDate: new Date(first_release_date * 1000),
             platforms: platforms.map((v) => v.name),
             genres: genres.map((v) => v.name),
             storyline: storyline,
