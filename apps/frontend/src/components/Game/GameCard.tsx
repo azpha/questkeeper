@@ -14,7 +14,7 @@ export default function GameCard({ game }: { game: Game }) {
           className="object-cover rounded-t-sm"
         />
 
-        <div className="my-2 px-4 relative max-w-[315px] truncate whitespace-nowrap">
+        <div className="p-4 relative max-w-[315px] truncate whitespace-nowrap">
           <h1 className="font-semibold">{game.title}</h1>
         </div>
       </div>
