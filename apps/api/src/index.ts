@@ -43,17 +43,10 @@ if (Environment!.NODE_ENV !== "development") {
 }
 
 // routes
-const buildPath = (path: string) => {
-  if (Environment!.NODE_ENV === "development") {
-    return "/" + path;
-  } else {
-    return "/api/" + path;
-  }
-};
-app.use(buildPath("settings"), SettingsRouter);
-app.use(buildPath("auth"), AuthRouter);
-app.use(buildPath("igdb"), IgdbRouter);
-app.use(buildPath("games"), GamesRouter);
+app.use("/api/settings", SettingsRouter);
+app.use("/api/auth", AuthRouter);
+app.use("/api/igdb", IgdbRouter);
+app.use("/api/games", GamesRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === "development") console.error(err);

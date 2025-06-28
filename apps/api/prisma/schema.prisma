@@ -10,6 +10,9 @@ datasource db {
 
 model Game {
   id           Int                @id @default(autoincrement())
+  title        String
+  coverId      String
+  summary      String
   gameSlug     String
   reviewStars  Int?
   review       String?

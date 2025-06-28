@@ -67,7 +67,7 @@ async function verifyAgainstTwitch() {
     }
   }
 
-  return undefined;
+  throw new Error("No token found!");
 }
 
 export default {
