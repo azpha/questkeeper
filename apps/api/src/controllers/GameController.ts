@@ -10,11 +10,11 @@ const IGDB_BASE_URL = "https://api.igdb.com/v4/";
 
 async function GetGame(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = Schemas.games.get.parse(req.params.id);
+    const gameSlug = Schemas.games.get.parse(req.params.id);
 
     const game = await Database.game.findFirst({
       where: {
-        id,
+        gameSlug,
         userId: req.user?.userId,
       },
     });

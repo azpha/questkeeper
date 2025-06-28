@@ -61,7 +61,7 @@ const schemas = {
         .optional(),
     }),
     delete: z.coerce.number(),
-    get: z.coerce.number(),
+    get: z.string().min(1),
   },
 };
 
