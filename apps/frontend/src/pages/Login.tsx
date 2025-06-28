@@ -65,7 +65,7 @@ export default function Login() {
               <input
                 name="password"
                 placeholder="Password.."
-                type="text"
+                type="password"
                 className="bg-black text-white rounded-lg p-2"
               />
             </div>
