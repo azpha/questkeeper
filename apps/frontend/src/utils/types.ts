@@ -10,7 +10,7 @@ type Game = {
   releaseDate: string;
   gameSlug: string;
   genres: string[];
-  storyline: string;
+  storyline?: string;
   review: string | null;
   reviewStars: number | null;
   currentState: PossibleGameStates;
@@ -24,7 +24,7 @@ interface IGDBGameAddition {
   };
   first_release_date: number;
   genres: IGDBGenres[];
-  storyline: string;
+  storyline?: string;
   involved_companies: InvolvedCompanies[];
   name: string;
   platforms: Platforms[];

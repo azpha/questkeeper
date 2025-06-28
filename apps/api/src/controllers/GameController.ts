@@ -111,7 +111,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
             releaseDate: new Date(first_release_date),
             platforms: platforms.map((v) => v.name),
             genres: genres.map((v) => v.name),
-            storyline,
+            storyline: storyline,
             screenshotIds,
             coverId,
             summary,

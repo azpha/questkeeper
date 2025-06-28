@@ -15,7 +15,7 @@ model Game {
   screenshotIds String[]
   platforms     String[]
   releaseDate   DateTime
-  storyline     String
+  storyline     String?
   genres        String[]
   developer     String
   publisher     String
