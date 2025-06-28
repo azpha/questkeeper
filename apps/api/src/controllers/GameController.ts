@@ -158,6 +158,11 @@ async function DeleteGame(req: Request, res: Response, next: NextFunction) {
     });
 
     if (game) {
+      FetchUtils.DeleteImage(game.coverId);
+      for (const screenshot of game.screenshotIds) {
+        FetchUtils.DeleteImage(screenshot);
+      }
+
       await Database.game.delete({
         where: {
           id,

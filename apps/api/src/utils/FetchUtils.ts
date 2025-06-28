@@ -27,7 +27,14 @@ function GetImageFilePath(id: string) {
   } else return undefined;
 }
 
+function DeleteImage(id: string) {
+  if (fs.existsSync(path.join(DOWNLOAD_PATH, id))) {
+    fs.rmSync(path.join(DOWNLOAD_PATH, id));
+  }
+}
+
 export default {
   FetchAndDownloadImage,
   GetImageFilePath,
+  DeleteImage,
 };
