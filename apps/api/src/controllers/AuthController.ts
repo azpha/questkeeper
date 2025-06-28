@@ -13,6 +13,15 @@ async function RegisterAccount(
   try {
     Schemas.auth.register.parse(req.body);
 
+    const userCount = await Database.user.count();
+    if (userCount > 0) {
+      res.status(400).json({
+        status: 400,
+        message: "Cannot register account",
+      });
+      return;
+    }
+
     const passwordHash = await bcrypt.hash(req.body.password, 12);
     const user = await Database.user.create({
       data: {
