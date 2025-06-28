@@ -150,10 +150,26 @@ async function GetCurrentUser(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+async function ServerEligibleForRegistration(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const countOfUsers = await Database.user.count();
+    res.status(200).json({
+      status: 200,
+      eligible: countOfUsers <= 0,
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 export default {
   RegisterAccount,
   LogIn,
   LogOut,
   GetCurrentUser,
+  ServerEligibleForRegistration,
 };
