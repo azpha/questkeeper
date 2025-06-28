@@ -69,7 +69,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Accept: "application/json",
       },
-      body: `where slug = "${body.gameSlug}"; fields name,summary,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name;`,
+      body: `where slug = "${body.gameSlug}"; fields name,summary,storyline,cover.url,first_release_date,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name,screenshots.url,platforms.name;`,
     });
 
     if (igdbResponse.ok) {
@@ -82,6 +82,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
           screenshots,
           involved_companies,
           platforms,
+          storyline,
           first_release_date,
           genres,
           name: title,
@@ -110,6 +111,7 @@ async function AddGame(req: Request, res: Response, next: NextFunction) {
             releaseDate: new Date(first_release_date),
             platforms: platforms.map((v) => v.name),
             genres: genres.map((v) => v.name),
+            storyline,
             screenshotIds,
             coverId,
             summary,

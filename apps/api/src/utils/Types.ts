@@ -11,6 +11,7 @@ interface IGDBGameAddition {
   };
   first_release_date: number;
   genres: IGDBGenres[];
+  storyline: string;
   involved_companies: InvolvedCompanies[];
   name: string;
   platforms: Platforms[];
