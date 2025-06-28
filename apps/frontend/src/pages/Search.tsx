@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { debounce } from "lodash";
 import type { IGDBSearchData } from "@/utils/types";
@@ -10,6 +10,7 @@ export default function Search() {
   const [addedGames, setAddedGames] = useState<string[] | null>(null);
   const [query, setQuery] = useState<string>("");
   const [params] = useSearchParams();
+  const location = useLocation();
 
   const debounced = useCallback(
     debounce((query: string) => {
@@ -19,9 +20,15 @@ export default function Search() {
         }
       });
     }, 500),
-    [query]
+    []
   );
 
+  useEffect(() => {
+    if (location.state?.query) {
+      debounced(location.state.query);
+      setQuery(location.state.query);
+    }
+  }, [location.state?.query]);
   useEffect(() => {
     api.getAddedSlugs().then((res) => {
       if (res) {

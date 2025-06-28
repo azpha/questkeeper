@@ -94,7 +94,7 @@ export default function Game() {
       {game || igdbGame ? (
         <div className="container mx-auto px-4 py-8">
           {hasBackState && (
-            <Link to={`/search?q=${location.state.query}`}>
+            <Link to={`/search`} state={{ query: location.state?.query }}>
               <h1 className="font-semibold mb-4">Back to search</h1>
             </Link>
           )}
