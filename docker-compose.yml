@@ -6,7 +6,7 @@ volumes:
 
 services:
   questkeeper:
-    build: .
+    image: ghcr.io/azpha/questkeeper:latest
     ports:
       - 3000:3000
     volumes:
