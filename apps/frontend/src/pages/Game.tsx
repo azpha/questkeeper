@@ -24,7 +24,7 @@ export default function Game() {
   const location = useLocation();
   const navigate = useNavigate();
   const isSearchPage = useMemo(() => params.type === "search", [params]);
-  const hasBackState = useMemo(() => location.state?.query, [location.state]);
+  const backState = useMemo(() => location.state?.from, [location.state]);
 
   useEffect(() => {
     if (params.slug && params.type) {
@@ -93,9 +93,14 @@ export default function Game() {
     <Layout>
       {game || igdbGame ? (
         <div className="container mx-auto px-4 py-8">
-          {hasBackState && (
-            <Link to={`/search`} state={{ query: location.state?.query }}>
-              <h1 className="font-semibold mb-4">Back to search</h1>
+          {backState && (
+            <Link
+              to={`/${location.state?.from?.page}`}
+              state={{ query: location.state?.from?.query }}
+            >
+              <h1 className="font-semibold mb-4">
+                Back to {location.state?.from?.page}
+              </h1>
             </Link>
           )}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

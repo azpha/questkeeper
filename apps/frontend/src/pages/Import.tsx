@@ -105,7 +105,15 @@ export default function Import() {
             })
             .map((v, k) => {
               return (
-                <Link to={`/game/${v.slug}`} key={k}>
+                <Link
+                  state={{
+                    from: {
+                      page: "import",
+                    },
+                  }}
+                  to={`/game/${v.slug}`}
+                  key={k}
+                >
                   <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                       {v.name}
@@ -159,7 +167,15 @@ export default function Import() {
               {results.filter((v) => !listOfExistingGames?.includes(v.slug)) &&
                 results.map((v, k) => {
                   return (
-                    <Link to={`/search/${v.slug}`} key={k}>
+                    <Link
+                      state={{
+                        from: {
+                          page: "import",
+                        },
+                      }}
+                      to={`/search/${v.slug}`}
+                      key={k}
+                    >
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                         <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                           {v.name}

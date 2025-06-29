@@ -65,7 +65,16 @@ export default function Search() {
             })
             .map((v, k) => {
               return (
-                <Link state={{ query }} to={`/game/${v.slug}`} key={k}>
+                <Link
+                  state={{
+                    from: {
+                      page: "search",
+                      query,
+                    },
+                  }}
+                  to={`/game/${v.slug}`}
+                  key={k}
+                >
                   <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                       {v.name}
@@ -118,7 +127,16 @@ export default function Search() {
                 .filter((v) => !listOfExistingGames?.includes(v.slug))
                 .map((v, k) => {
                   return (
-                    <Link state={{ query }} to={`/search/${v.slug}`} key={k}>
+                    <Link
+                      state={{
+                        from: {
+                          page: "search",
+                          query,
+                        },
+                      }}
+                      to={`/search/${v.slug}`}
+                      key={k}
+                    >
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                         <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                           {v.name}
