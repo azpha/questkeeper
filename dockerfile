@@ -10,7 +10,6 @@ COPY pnpm-*.yaml ./
 
 COPY . ./
 RUN pnpm i
-RUN pnpm exec prisma generate
 
 ENV NODE_ENV production
 RUN pnpm run build
