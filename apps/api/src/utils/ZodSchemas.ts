@@ -36,6 +36,11 @@ const schemas = {
     id: z.coerce.number(),
     steamIds: z.string().min(1),
     getCover: z.string().min(1),
+    getGamesOptions: z
+      .object({
+        select: z.enum(["gameSlug"]).optional(),
+      })
+      .optional(),
     create: z.object({
       gameSlug: z.string().min(1),
       currentState: z.enum([

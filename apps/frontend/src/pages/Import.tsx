@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -12,7 +12,9 @@ export default function Import() {
   const [results, setResults] = useState<IGDBSearchData[]>([]);
   const [steamData, setSteamData] = useState<SteamGame[] | null>(null);
   const [steamOffset, setSteamOffset] = useState<number>(1);
-  const [addedGames, setAddedGames] = useState<string[] | null>(null);
+  const [addedGames, setAddedGames] = useState<{ gameSlug: string }[] | null>(
+    null
+  );
   const auth = useAuth();
 
   const fetchSubsetOfSteamGames = () => {
@@ -52,7 +54,7 @@ export default function Import() {
         setSteamData(res);
       }
     });
-    api.getAddedSlugs().then((res) => {
+    api.fetchGames(`select=gameSlug`).then((res) => {
       if (res) {
         setAddedGames(res);
       }
@@ -79,6 +81,14 @@ export default function Import() {
       return prevState + 1;
     });
   };
+  const listOfExistingGames = useMemo(() => {
+    const matchedInArray = results
+      ?.filter((v) => {
+        return addedGames?.some((addedGame) => addedGame.gameSlug === v.slug);
+      })
+      .map((v) => v.slug);
+    return matchedInArray;
+  }, [results]);
 
   const ExistingGames = () => {
     return (
@@ -90,7 +100,9 @@ export default function Import() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {results
-            ?.filter((v) => addedGames?.includes(v.slug))
+            ?.filter((v) => {
+              return listOfExistingGames?.includes(v.slug);
+            })
             .map((v, k) => {
               return (
                 <Link to={`/game/${v.slug}`} key={k}>
@@ -127,7 +139,7 @@ export default function Import() {
                   className="bg-black text-white rounded-lg w-full p-2"
                 />
 
-                <div className="mt-2">
+                <div className="mt-2 h-full">
                   <Button onClick={handleUpdateSteamId}>Submit</Button>
                 </div>
               </div>
@@ -144,9 +156,8 @@ export default function Import() {
               <p>All of the games found in your Steam library</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {results
-                .filter((v) => !addedGames?.includes(v.slug))
-                .map((v, k) => {
+              {results.filter((v) => !listOfExistingGames?.includes(v.slug)) &&
+                results.map((v, k) => {
                   return (
                     <Link to={`/search/${v.slug}`} key={k}>
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
@@ -166,8 +177,9 @@ export default function Import() {
             </div>
 
             <div className="my-2">
-              {results.filter((v) => addedGames?.includes(v.slug)).length >
-                0 && <ExistingGames />}
+              {listOfExistingGames && listOfExistingGames.length > 0 && (
+                <ExistingGames />
+              )}
             </div>
           </div>
         ) : (

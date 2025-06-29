@@ -49,6 +49,8 @@ async function GetAllAddedGameSlugs(
 }
 async function GetManyGames(req: Request, res: Response, next: NextFunction) {
   try {
+    const body = Schemas.games.getGamesOptions.parse(req.query);
+
     const games = await Database.game.findMany({
       where: {
         userId: req.user?.userId,
@@ -56,6 +58,11 @@ async function GetManyGames(req: Request, res: Response, next: NextFunction) {
       orderBy: {
         updatedAt: "desc",
       },
+      select: body?.select
+        ? {
+            [body.select]: true,
+          }
+        : undefined,
     });
 
     res.status(200).json({

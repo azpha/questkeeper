@@ -1,14 +1,17 @@
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
+import { Button } from "@/components/ui/button";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
-import type { IGDBSearchData } from "@/utils/types";
 import EmptyState from "@/components/EmptyState";
+import type { IGDBSearchData } from "@/utils/types";
 
 export default function Search() {
   const [results, setResults] = useState<IGDBSearchData[] | null>(null);
-  const [addedGames, setAddedGames] = useState<string[] | null>(null);
+  const [addedGames, setAddedGames] = useState<{ gameSlug: string }[] | null>(
+    null
+  );
   const [query, setQuery] = useState<string>("");
   const [params] = useSearchParams();
   const location = useLocation();
@@ -25,7 +28,7 @@ export default function Search() {
   );
 
   useEffect(() => {
-    api.getAddedSlugs().then((res) => {
+    api.fetchGames(`select=gameSlug`).then((res) => {
       if (res) {
         setAddedGames(res);
       }
@@ -38,6 +41,14 @@ export default function Search() {
       debounced(q);
     }
   }, [params.get("q"), location.state?.query]);
+  const listOfExistingGames = useMemo(() => {
+    const matchedInArray = results
+      ?.filter((v) => {
+        return addedGames?.some((addedGame) => addedGame.gameSlug === v.slug);
+      })
+      .map((v) => v.slug);
+    return matchedInArray;
+  }, [results]);
 
   const ExistingGames = () => {
     return (
@@ -49,7 +60,9 @@ export default function Search() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {results
-            ?.filter((v) => addedGames?.includes(v.slug))
+            ?.filter((v) => {
+              return listOfExistingGames?.includes(v.slug);
+            })
             .map((v, k) => {
               return (
                 <Link state={{ query }} to={`/game/${v.slug}`} key={k}>
@@ -57,7 +70,9 @@ export default function Search() {
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
                       {v.name}
                     </h1>
-                    <p className="whitespace-nowrap truncate">{v.summary}</p>
+                    <p className="whitespace-nowrap truncate">
+                      {v.summary || "A Very Cool Game"}
+                    </p>
                   </div>
                 </Link>
               );
@@ -100,7 +115,7 @@ export default function Search() {
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {results
-                .filter((v) => !addedGames?.includes(v.slug))
+                .filter((v) => !listOfExistingGames?.includes(v.slug))
                 .map((v, k) => {
                   return (
                     <Link state={{ query }} to={`/search/${v.slug}`} key={k}>
@@ -118,14 +133,28 @@ export default function Search() {
             </div>
 
             <div className="my-2">
-              {results.filter((v) => addedGames?.includes(v.slug)).length >
-                0 && <ExistingGames />}
+              {listOfExistingGames && listOfExistingGames.length > 0 && (
+                <ExistingGames />
+              )}
             </div>
           </div>
         ) : !query || query === "" ? (
           <div className="text-center">
             <h1 className="text-2xl font-bold">Search for a game!</h1>
-            <p>Search for a game to add to your library.</p>
+            <p>
+              Search for a game to add to your library, or import from steam
+            </p>
+            <div className="my-2">
+              <Link to="/import">
+                <Button
+                  variant={"outline"}
+                  className="hover:cursor-pointer text-black"
+                  size="sm"
+                >
+                  Import
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <EmptyState hint="Nothing was found with that term :(" />

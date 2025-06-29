@@ -42,8 +42,10 @@ async function deleteGame(id: number) {
   }).then((res) => res.ok);
 }
 
-async function fetchGames() {
-  return fetch("/api/games", {
+// game fetching endpoints
+async function fetchGames(params?: string) {
+  const url = params ? `/api/games?${params}` : "/api/games";
+  return fetch(url, {
     method: "get",
     credentials: "include",
   }).then(async (res) => {
