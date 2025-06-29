@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import Environment from "../utils/Environment";
 import Database from "../services/Database";
+import { SteamGame } from "../utils/Types";
 
 const STEAM_BASE_URL = "https://api.steampowered.com/";
-const IGDB_BASE_URL = "https://api.igdb.com/v4/";
 
 async function FetchUserGames(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,7 +24,14 @@ async function FetchUserGames(req: Request, res: Response, next: NextFunction) {
 
       res.status(200).json({
         status: 200,
-        games: data.response.games,
+        games: data.response.games.sort((a: SteamGame, b: SteamGame) => {
+          if (a.appid < b.appid) {
+            return 1;
+          } else if (a.appid > b.appid) {
+            return -1;
+          }
+          return 0;
+        }),
       });
     } else {
       res.status(500).json({

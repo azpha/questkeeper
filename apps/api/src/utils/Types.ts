@@ -2,6 +2,10 @@ interface JWTPayload {
   userId: number;
   email: string;
 }
+type SteamGame = {
+  appid: number;
+  playtime_forever: number;
+};
 
 interface IGDBGameAddition {
   id: number;
@@ -53,4 +57,4 @@ declare module "express" {
   }
 }
 
-export type { JWTPayload, IGDBGameAddition };
+export type { JWTPayload, IGDBGameAddition, SteamGame };
