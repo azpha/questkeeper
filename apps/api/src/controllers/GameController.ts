@@ -27,26 +27,6 @@ async function GetGame(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-async function GetAllAddedGameSlugs(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const slugs = await Database.game.findMany({
-      select: {
-        gameSlug: true,
-      },
-    });
-
-    res.status(200).json({
-      status: 200,
-      slugs: slugs.map((v) => v.gameSlug),
-    });
-  } catch (e) {
-    next(e);
-  }
-}
 async function GetManyGames(req: Request, res: Response, next: NextFunction) {
   try {
     const body = Schemas.games.getGamesOptions.parse(req.query);
@@ -255,7 +235,6 @@ async function UpdateGame(req: Request, res: Response, next: NextFunction) {
 export default {
   AddGame,
   GetGame,
-  GetAllAddedGameSlugs,
   GetManyGames,
   DeleteGame,
   UpdateGame,
