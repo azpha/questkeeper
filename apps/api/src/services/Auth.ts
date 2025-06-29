@@ -26,13 +26,6 @@ async function verifyJwt(req: Request, res: Response, next: NextFunction) {
     });
   }
 }
-async function laxVerifyJwt(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies.authToken;
-  const decoded = jwt.verify(token, Environment!.JWT_SECRET) as JWTPayload;
-  req.user = decoded;
-  next();
-}
-
 async function verifyAgainstTwitch() {
   const cachedKey = await Redis.get("twitchToken");
 
@@ -72,6 +65,5 @@ async function verifyAgainstTwitch() {
 
 export default {
   verifyJwt,
-  laxVerifyJwt,
   verifyAgainstTwitch,
 };
