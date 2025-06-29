@@ -52,3 +52,9 @@ The API is available on the `/api/` path, both of the Vite dev server & the prod
 ### Building the app
 
 Simply run `pnpm run build` from root. You can build each individual project by running their respective `build` scripts as well.
+
+### Database Migrations
+
+When you add fields to the Prisma schema, ensure that they have proper default values before migrations.
+
+To add a migration, cd into the API folder and run `pnpm exec prisma migrate dev --name [your_migration_name]`, preferably keeping the naming syntax.
