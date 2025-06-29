@@ -80,17 +80,16 @@ async function SearchForSteamId(
   try {
     let steamIdOrIds = Schemas.games.steamIds.parse(req.query.ids);
 
-    let filterString = ``;
+    let filterString = "";
     let steamIdsAsArray: string[] = [...steamIdOrIds.split(",")];
+    let steamUrls: string[] = [];
 
     if (steamIdsAsArray.length > 0) {
       for (const steamId of steamIdsAsArray) {
-        if (filterString === "") {
-          filterString += `where websites.url = *"https://store.steampowered.com/app/${steamId}" `;
-        } else {
-          filterString += `| websites.url = *"https://store.steampowered.com/app/${steamId}" `;
-        }
+        steamUrls.push(`websites.url = *"${steamId}"*`);
       }
+
+      filterString += steamUrls.join(" | ");
     }
     filterString += "; fields name,slug,summary;";
 
@@ -102,7 +101,7 @@ async function SearchForSteamId(
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken,
       },
-      body: filterString,
+      body: `where ${filterString}`,
     });
 
     const data = await igdbResponse.json();
