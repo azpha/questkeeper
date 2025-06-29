@@ -142,6 +142,7 @@ async function GetCurrentUser(req: Request, res: Response, next: NextFunction) {
           name: true,
           email: true,
           games: true,
+          steamId: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -175,11 +176,41 @@ async function ServerEligibleForRegistration(
     next(e);
   }
 }
+async function UpdateUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { steamId } = Schemas.auth.update.parse(req.body);
+
+    const user = await Database.user.update({
+      where: {
+        id: req.user?.userId,
+      },
+      data: {
+        steamId,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        steamId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    res.status(200).json({
+      status: 200,
+      user,
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 export default {
   RegisterAccount,
   LogIn,
   LogOut,
+  UpdateUser,
   GetCurrentUser,
   ServerEligibleForRegistration,
 };

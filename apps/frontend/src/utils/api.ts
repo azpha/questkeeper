@@ -3,6 +3,7 @@ import type {
   IGDBGameAddition,
   IGDBSearchData,
   PossibleGameStates,
+  SteamGame,
   User,
 } from "./types";
 
@@ -94,6 +95,28 @@ async function getAddedSlugs() {
     } else throw new Error("Failed to fetch added game slugs!");
   });
 }
+async function fetchSteamIgdbGames(ids: string) {
+  return fetch("/api/igdb/steam?ids=" + ids, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.data as IGDBSearchData[];
+    } else throw new Error("Failed to fetch IGDB games using Steam ID!");
+  });
+}
+async function fetchSteamGames() {
+  return fetch("/api/steam/games", {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.games as SteamGame[];
+    } else throw new Error("Failed to fetch steam games!");
+  });
+}
 
 // authentication
 async function fetchCurrentUser() {
@@ -148,18 +171,31 @@ async function logUserOut() {
     credentials: "include",
   }).then((res) => res.ok);
 }
+async function updateUser(body: object) {
+  return fetch("/api/auth/@me", {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+  }).then((res) => res.ok);
+}
 
 export default {
   fetchGames,
   fetchGame,
   fetchGameDataFromIgdb,
   getAddedSlugs,
+  fetchSteamIgdbGames,
   searchIgdb,
   updateGame,
+  fetchSteamGames,
   createGame,
   deleteGame,
   registerAccount,
   logUserIn,
+  updateUser,
   fetchCurrentUser,
   checkRegistrationEligibility,
   logUserOut,

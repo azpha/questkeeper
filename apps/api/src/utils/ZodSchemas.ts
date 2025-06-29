@@ -23,6 +23,9 @@ const schemas = {
       username: z.string().min(1),
       password: z.string().min(8),
     }),
+    update: z.object({
+      steamId: z.string().min(1).optional(),
+    }),
   },
   igdb: {
     search: z.string().min(1),

@@ -15,6 +15,10 @@ type Game = {
   reviewStars: number | null;
   currentState: PossibleGameStates;
 };
+type SteamGame = {
+  appid: number;
+  playtime_forever: number;
+};
 
 interface IGDBGameAddition {
   id: number;
@@ -64,6 +68,7 @@ type User = {
   name: string;
   email: string;
   userId: number;
+  steamId?: string;
 };
 
 enum PossibleGameStates {
@@ -74,5 +79,5 @@ enum PossibleGameStates {
   COMPLETED = "COMPLETED",
 }
 
-export type { Game, User, IGDBGameAddition, IGDBSearchData };
+export type { Game, User, IGDBGameAddition, IGDBSearchData, SteamGame };
 export { PossibleGameStates };

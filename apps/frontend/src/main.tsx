@@ -10,6 +10,7 @@ import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Game from "./pages/Game.tsx";
 import Search from "./pages/Search.tsx";
+import Import from "./pages/Import.tsx";
 
 scan({
   enabled: process.env.NODE_ENV !== "production",
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/search",
     element: <Search />,
+  },
+  {
+    path: "/import",
+    element: <Import />,
   },
 ]);
 

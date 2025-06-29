@@ -7,12 +7,13 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ZodError } from "zod";
 import path from "path";
+import Environment from "./utils/Environment";
 
 // routes
 import AuthRouter from "./routes/AuthRouter";
 import IgdbRouter from "./routes/IgdbRouter";
 import GamesRouter from "./routes/GameRouter";
-import Environment from "./utils/Environment";
+import SteamRouter from "./routes/SteamRouter";
 
 const app = express();
 const FRONTEND_APP_DIST_PATH = path.join(__dirname, "../../frontend/dist");
@@ -46,6 +47,7 @@ app.use("/api/images", express.static(path.join(__dirname, "../files")));
 app.use("/api/auth", AuthRouter);
 app.use("/api/igdb", IgdbRouter);
 app.use("/api/games", GamesRouter);
+app.use("/api/steam", SteamRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === "development") console.error(err);

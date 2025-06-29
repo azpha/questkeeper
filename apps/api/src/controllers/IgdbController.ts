@@ -92,7 +92,7 @@ async function SearchForSteamId(
         }
       }
     }
-    filterString += "; fields name;";
+    filterString += "; fields name,slug,summary;";
 
     const twitchToken = await Auth.verifyAgainstTwitch();
     const igdbResponse = await fetch(IGDB_BASE_URL + "games", {
