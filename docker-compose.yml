@@ -27,6 +27,7 @@ services:
       - IGDB_CLIENT_ID=mysupercoolclientidformytwitchapp
       - HOSTNAME=questkeeper.local
       - IGDB_CLIENT_SECRET=mysupercoolclientsecretformytwitchapp
+      # - STEAM_API_KEY=blahblablablablabla # optional steam api key for steam functionality
 
 
   # do not change unless you know what you're doing

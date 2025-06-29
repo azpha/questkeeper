@@ -7,6 +7,14 @@ const STEAM_BASE_URL = "https://api.steampowered.com/";
 
 async function FetchUserGames(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!Environment!.STEAM_API_KEY) {
+      res.status(400).json({
+        status: 400,
+        message: "No Steam API key provided",
+      });
+      return;
+    }
+
     const user = await Database.user.findFirst({
       where: {
         id: req.user?.userId,
