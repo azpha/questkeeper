@@ -23,11 +23,11 @@ services:
       - REDIS_URL=redis://redis:6379
       # do not change unless you know what you're doing
 
-      - JWT_SECRET=048cee477e4e9b051f9a8d071a5ae3fd524e73f8abc70836759d537b68618d23
-      - IGDB_CLIENT_ID=zra5gua4pwn917dooxfmauntv6zhux
-      - HOSTNAME=https://games.fntz.net
-      - IGDB_CLIENT_SECRET=bddjkyw59mlal4wa7uaozj8wr0rbwt
-      - STEAM_API_KEY=0C081E85A529B720058747169AD27A37 # optional steam api key for steam functionality
+      - JWT_SECRET=aaaaaaaaaaaaaaaaaa
+      - IGDB_CLIENT_ID=aaaaaaaaaaaaaaaaaa
+      - HOSTNAME=localhost
+      - IGDB_CLIENT_SECRET=aaaaaaaaaaaaaaaaaa
+      # - STEAM_API_KEY=aaaaaaaaaaaaaaaaa # optional steam api key for steam functionality
 
 
   # do not change unless you know what you're doing
