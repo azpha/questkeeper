@@ -18,7 +18,7 @@ export default function GamePill({ type }: { type: PossibleGameStates }) {
 
   return (
     <div
-      className={`${colors[type]} rounded-lg p-1 absolute text-whit font-bold text-xs top-2 right-2 select-none`}
+      className={`${colors[type]} rounded-lg p-1 absolute font-bold text-xs top-2 right-2 select-none`}
     >
       <p>{text[type]}</p>
     </div>

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import type { Game, IGDBGameAddition, PossibleGameStates } from "@/utils/types";
 import { Button } from "@/components/ui/button";
+import GenrePill from "@/components/Game/GenrePill";
 
 export default function Game() {
   const [game, setGame] = useState<Game | null>(null);
@@ -162,21 +163,17 @@ export default function Game() {
                 </h1>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1">
-                    <span className="font-semibold">
-                      {!isSearchPage ? (
-                        <>
-                          {game && game.genres.length > 1
+                    <GenrePill
+                      genre={
+                        !isSearchPage
+                          ? game && game.genres.length > 1
                             ? game?.genres.join(", ")
-                            : game?.genres[0]}
-                        </>
-                      ) : (
-                        <>
-                          {igdbGame && igdbGame.genres.length > 1
+                            : game?.genres[0]
+                          : igdbGame && igdbGame.genres.length > 1
                             ? igdbGame.genres.map((v) => v.name).join(", ")
-                            : igdbGame?.genres[0].name}
-                        </>
-                      )}
-                    </span>
+                            : igdbGame?.genres[0].name
+                      }
+                    />
                   </div>
                 </div>
                 <p>{!isSearchPage ? game?.summary : igdbGame?.summary}</p>
