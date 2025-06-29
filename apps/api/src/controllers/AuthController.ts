@@ -46,7 +46,7 @@ async function RegisterAccount(
     const cookie =
       Environment!.NODE_ENV === "development"
         ? `authToken=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=172800;`
-        : `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=172800;`;
+        : `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME?.replace("http://", "").replace("https://", "")}; SameSite=Strict; Path=/; Max-Age=172800;`;
     res.setHeader("Set-Cookie", cookie);
 
     res.status(200).json({
@@ -97,7 +97,7 @@ async function LogIn(req: Request, res: Response, next: NextFunction) {
     const cookie =
       Environment!.NODE_ENV === "development"
         ? `authToken=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=172800;`
-        : `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=172800;`;
+        : `authToken=${token}; HttpOnly; Secure; Domain .${Environment!.HOSTNAME?.replace("http://", "").replace("https://", "")}; SameSite=Strict; Path=/; Max-Age=172800;`;
     res.setHeader("Set-Cookie", cookie);
 
     res.status(200).json({
@@ -119,7 +119,7 @@ async function LogOut(req: Request, res: Response, next: NextFunction) {
     const cookie =
       Environment!.NODE_ENV === "development"
         ? `authToken=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0;`
-        : `authToken=; HttpOnly; Secure; Domain .${Environment!.HOSTNAME}; SameSite=Strict; Path=/; Max-Age=0;`;
+        : `authToken=; HttpOnly; Secure; Domain .${Environment!.HOSTNAME?.replace("http://", "").replace("https://", "")}; SameSite=Strict; Path=/; Max-Age=0;`;
     res.setHeader("Set-Cookie", cookie);
 
     res.status(200).json({
