@@ -231,11 +231,40 @@ async function UpdateGame(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+async function GetGamesInPlayingForLongTime(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const currentMonthMinusOne = new Date();
+    currentMonthMinusOne.setMonth(currentMonthMinusOne.getMonth() - 1);
+
+    const data = await Database.game.findMany({
+      where: {
+        updatedAt: {
+          lt: currentMonthMinusOne,
+        },
+        currentState: "PLAYING",
+      },
+    });
+
+    console.log(data);
+
+    res.status(200).json({
+      status: 200,
+      data,
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 export default {
   AddGame,
   GetGame,
   GetManyGames,
+  GetGamesInPlayingForLongTime,
   DeleteGame,
   UpdateGame,
 };

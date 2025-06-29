@@ -66,6 +66,17 @@ async function fetchGame(slug: string) {
     } else throw new Error("Failed to fetch game!");
   });
 }
+async function fetchBacklogGames() {
+  return fetch("/api/games/backlog", {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.data as Game[];
+    } else throw new Error("Failed to fetch backlog!");
+  });
+}
 async function getAddedSlugs() {
   return fetch("/api/games/added", {
     method: "get",
@@ -193,6 +204,7 @@ async function updateUser(body: object) {
 export default {
   fetchGames,
   fetchGame,
+  fetchBacklogGames,
   fetchGameFromIgdb,
   getAddedSlugs,
   fetchSteamIgdbGames,
