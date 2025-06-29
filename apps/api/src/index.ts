@@ -29,9 +29,16 @@ app.use(cookieParser());
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
+// routes
+app.use("/api/images", express.static(path.join(__dirname, "../files")));
+app.use("/api/auth", AuthRouter);
+app.use("/api/igdb", IgdbRouter);
+app.use("/api/games", GamesRouter);
+app.use("/api/steam", SteamRouter);
+
 if (Environment!.NODE_ENV !== "development") {
   app.use(express.static(FRONTEND_APP_DIST_PATH));
-  app.get("/", (req: Request, res: Response) => {
+  app.use((req: Request, res: Response) => {
     res.sendFile(path.join(FRONTEND_APP_DIST_PATH, "index.html"));
   });
 } else {
@@ -41,13 +48,6 @@ if (Environment!.NODE_ENV !== "development") {
     });
   });
 }
-
-// routes
-app.use("/api/images", express.static(path.join(__dirname, "../files")));
-app.use("/api/auth", AuthRouter);
-app.use("/api/igdb", IgdbRouter);
-app.use("/api/games", GamesRouter);
-app.use("/api/steam", SteamRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (process.env.NODE_ENV === "development") console.error(err);
