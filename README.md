@@ -2,9 +2,13 @@
 
 A self-hosted solution for hosting your game wishlist or currently playing stats.
 
-## Setup
+## Getting Started
 
 Provided in this repository is a [docker-compose](./docker-compose.yml) configuration that you can use to easily deploy this application 🕺
+
+### Registration
+
+Once you have the service built, navigate to `/register` to register your account.
 
 ### Steam Functionality
 
