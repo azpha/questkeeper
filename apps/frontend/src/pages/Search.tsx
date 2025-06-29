@@ -142,7 +142,7 @@ export default function Search() {
           <div className="text-center">
             <h1 className="text-2xl font-bold">Search for a game!</h1>
             <p>
-              Search for a game to add to your library, or import from steam
+              Search for a game to add to your library, or import from Steam
             </p>
             <div className="my-2">
               <Link to="/import">
