@@ -53,6 +53,9 @@ async function GetManyGames(req: Request, res: Response, next: NextFunction) {
       where: {
         userId: req.user?.userId,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
 
     res.status(200).json({

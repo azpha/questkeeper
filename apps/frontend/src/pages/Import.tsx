@@ -1,11 +1,9 @@
 import Layout from "@/components/Layout";
 import api from "@/utils/api";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { debounce } from "lodash";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Link } from "react-router-dom";
-import EmptyState from "@/components/EmptyState";
 import type { IGDBSearchData, SteamGame } from "@/utils/types";
 
 export default function Import() {
