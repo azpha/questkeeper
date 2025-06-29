@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import type { IGDBSearchData, SteamGame } from "@/utils/types";
+import EmptyState from "@/components/EmptyState";
 
 export default function Import() {
   const steamIdField = useRef<HTMLInputElement | null>(null);
@@ -44,22 +45,24 @@ export default function Import() {
     }
   }, [steamOffset, steamData]);
   useEffect(() => {
-    if (results && !initialLoad) {
+    if (results.length > 0 && !initialLoad) {
       setInitialLoad(true);
     }
   }, [results]);
   useEffect(() => {
-    api.fetchSteamGames().then((res) => {
-      if (res) {
-        setSteamData(res);
-      }
-    });
+    if (auth.hasAuthLoaded && auth.currentUser?.steamId) {
+      api.fetchSteamGames().then((res) => {
+        if (res) {
+          setSteamData(res);
+        }
+      });
+    }
     api.fetchGames(`select=gameSlug`).then((res) => {
       if (res) {
         setAddedGames(res);
       }
     });
-  }, []);
+  }, [auth]);
   useEffect(() => {
     if (steamData && !results) {
       fetchSubsetOfSteamGames();
@@ -157,7 +160,7 @@ export default function Import() {
       )}
 
       <div className="container mx-auto px-4 py-8">
-        {results && (results.length > 0 || !initialLoad) ? (
+        {results && results.length > 0 && initialLoad ? (
           <div>
             <div className="mb-4">
               <h1 className="text-2xl font-bold">Games you own</h1>
@@ -198,11 +201,15 @@ export default function Import() {
               )}
             </div>
           </div>
-        ) : (
+        ) : !initialLoad && auth.hasAuthLoaded && auth.currentUser?.steamId ? (
           <div className="text-center">
             <h1 className="text-2xl font-bold">Loading your Steam library..</h1>
             <p>Hang tight, this might take a minute..</p>
           </div>
+        ) : (
+          initialLoad &&
+          results &&
+          results.length <= 0 && <EmptyState hint="No games found :(" />
         )}
       </div>
     </Layout>

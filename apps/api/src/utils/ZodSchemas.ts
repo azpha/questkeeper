@@ -24,7 +24,7 @@ const schemas = {
       password: z.string().min(8),
     }),
     update: z.object({
-      steamId: z.string().min(1).optional(),
+      steamId: z.string().min(1).optional().nullable(),
     }),
   },
   igdb: {
