@@ -7,50 +7,7 @@ import type {
   User,
 } from "./types";
 
-async function fetchGames() {
-  return fetch("/api/games", {
-    method: "get",
-    credentials: "include",
-  }).then(async (res) => {
-    if (res.ok) {
-      const data = await res.json();
-      return data.games as Game[];
-    } else throw new Error("Failed to fetch games!");
-  });
-}
-async function fetchGame(slug: string) {
-  return fetch("/api/games/" + slug, {
-    method: "get",
-    credentials: "include",
-  }).then(async (res) => {
-    if (res.ok) {
-      const data = await res.json();
-      return data.game as Game;
-    } else throw new Error("Failed to fetch game!");
-  });
-}
-async function fetchGameDataFromIgdb(slug: string) {
-  return fetch("/api/igdb/game/" + slug, {
-    method: "get",
-    credentials: "include",
-  }).then(async (res) => {
-    if (res.ok) {
-      const data = await res.json();
-      return data.game as IGDBGameAddition;
-    } else throw new Error("Failed to fetch game!");
-  });
-}
-async function searchIgdb(query: string) {
-  return fetch("/api/igdb/search?q=" + query, {
-    method: "get",
-    credentials: "include",
-  }).then(async (res) => {
-    if (res.ok) {
-      const data = await res.json();
-      return data.data as IGDBSearchData[];
-    } else throw new Error("Failed to search!");
-  });
-}
+// game management endpoints
 async function updateGame(id: number, body: object) {
   return fetch("/api/games/" + id, {
     method: "PATCH",
@@ -84,6 +41,29 @@ async function deleteGame(id: number) {
     credentials: "include",
   }).then((res) => res.ok);
 }
+
+async function fetchGames() {
+  return fetch("/api/games", {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.games as Game[];
+    } else throw new Error("Failed to fetch games!");
+  });
+}
+async function fetchGame(slug: string) {
+  return fetch("/api/games/" + slug, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.game as Game;
+    } else throw new Error("Failed to fetch game!");
+  });
+}
 async function getAddedSlugs() {
   return fetch("/api/games/added", {
     method: "get",
@@ -93,6 +73,30 @@ async function getAddedSlugs() {
       const data = await res.json();
       return data.slugs as string[];
     } else throw new Error("Failed to fetch added game slugs!");
+  });
+}
+
+// igdb endpoints
+async function fetchGameFromIgdb(slug: string) {
+  return fetch("/api/igdb/game/" + slug, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.game as IGDBGameAddition;
+    } else throw new Error("Failed to fetch game!");
+  });
+}
+async function searchIgdb(query: string) {
+  return fetch("/api/igdb/search?q=" + query, {
+    method: "get",
+    credentials: "include",
+  }).then(async (res) => {
+    if (res.ok) {
+      const data = await res.json();
+      return data.data as IGDBSearchData[];
+    } else throw new Error("Failed to search!");
   });
 }
 async function fetchSteamIgdbGames(ids: string) {
@@ -106,6 +110,8 @@ async function fetchSteamIgdbGames(ids: string) {
     } else throw new Error("Failed to fetch IGDB games using Steam ID!");
   });
 }
+
+// steam endpoints
 async function fetchSteamGames() {
   return fetch("/api/steam/games", {
     method: "get",
@@ -185,7 +191,7 @@ async function updateUser(body: object) {
 export default {
   fetchGames,
   fetchGame,
-  fetchGameDataFromIgdb,
+  fetchGameFromIgdb,
   getAddedSlugs,
   fetchSteamIgdbGames,
   searchIgdb,

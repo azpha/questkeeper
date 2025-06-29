@@ -29,7 +29,7 @@ export default function Game() {
   useEffect(() => {
     if (params.slug && params.type) {
       if (params.type === "search") {
-        api.fetchGameDataFromIgdb(params.slug).then((res) => {
+        api.fetchGameFromIgdb(params.slug).then((res) => {
           console.log(res);
           if (res) {
             setIgdbGame(res);
