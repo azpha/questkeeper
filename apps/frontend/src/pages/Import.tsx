@@ -8,48 +8,61 @@ import type { IGDBSearchData, SteamGame } from "@/utils/types";
 
 export default function Import() {
   const steamIdField = useRef<HTMLInputElement | null>(null);
+  const [initialLoad, setInitialLoad] = useState<boolean>(false);
   const [results, setResults] = useState<IGDBSearchData[]>([]);
   const [steamData, setSteamData] = useState<SteamGame[] | null>(null);
-  const [steamInitialLoad, setSteamInitialLoad] = useState<boolean>(false);
   const [steamOffset, setSteamOffset] = useState<number>(1);
   const [addedGames, setAddedGames] = useState<string[] | null>(null);
   const auth = useAuth();
 
-  const fetchSteamGames = (start?: number, end?: number) => {
+  const fetchSubsetOfSteamGames = () => {
     if (steamData) {
-      const dataSubset = steamData.slice(start || 0, end || 10);
+      const dataSubset = steamData.slice(
+        (steamOffset - 1) * 10,
+        steamOffset * 10
+      );
       const idString = dataSubset.map((v) => v.appid).join(",");
 
       api.fetchSteamIgdbGames(idString).then((res) => {
-        console.log(res);
-        setResults((prevState) => {
-          return [...prevState, ...res];
-        });
+        const doesExist = results.some((v) =>
+          res.some((value) => value.slug === v.slug)
+        );
+        if (!doesExist) {
+          setResults((prevState) => {
+            return [...prevState, ...res];
+          });
+        }
       });
     }
   };
 
   useEffect(() => {
     if (steamData) {
-      fetchSteamGames();
-      setSteamInitialLoad(true);
+      fetchSubsetOfSteamGames();
     }
-  }, [steamData]);
-  useEffect(() => {}, [steamOffset]);
+  }, [steamOffset, steamData]);
   useEffect(() => {
-    if (auth.currentUser?.steamId) {
-      api.fetchSteamGames().then((res) => {
+    if (results && !initialLoad) {
+      setInitialLoad(true);
+    }
+  }, [results]);
+  useEffect(() => {
+    api.fetchSteamGames().then((res) => {
+      if (res) {
         setSteamData(res);
-      });
-    }
-  }, [auth.currentUser?.steamId]);
-  useEffect(() => {
+      }
+    });
     api.getAddedSlugs().then((res) => {
       if (res) {
         setAddedGames(res);
       }
     });
   }, []);
+  useEffect(() => {
+    if (steamData && !results) {
+      fetchSubsetOfSteamGames();
+    }
+  }, [steamData]);
 
   const handleUpdateSteamId = async () => {
     const id = steamIdField.current?.value;
@@ -62,7 +75,6 @@ export default function Import() {
   };
   const nextPage = () => {
     console.log(steamOffset * 10, (steamOffset + 1) * 10);
-    fetchSteamGames(steamOffset * 10, (steamOffset + 1) * 10);
     setSteamOffset((prevState) => {
       return prevState + 1;
     });
@@ -98,7 +110,7 @@ export default function Import() {
 
   return (
     <Layout>
-      {!auth.currentUser?.steamId && (
+      {!auth.currentUser?.steamId && auth.hasAuthLoaded && (
         <div className="border-b bg-muted/30">
           <div className="container mx-auto px-4 py-6">
             <div className="max-w-2xl mx-auto space-y-4">
@@ -125,7 +137,7 @@ export default function Import() {
       )}
 
       <div className="container mx-auto px-4 py-8">
-        {results && (results.length > 0 || !steamInitialLoad) ? (
+        {results && (results.length > 0 || !initialLoad) ? (
           <div>
             <div className="mb-4">
               <h1 className="text-2xl font-bold">Games you own</h1>
