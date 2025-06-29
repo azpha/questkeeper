@@ -225,9 +225,9 @@ export default function Game() {
               <Card className="bg-zinc-600 text-white">
                 <CardHeader>
                   <CardTitle className="text-lg">Game Info</CardTitle>
-                  <span className="text-sm">
-                    Released:{" "}
-                    <span className="font-semibold">
+                  <span className="text-sm flex flex-col">
+                    <p className="font-semibold">Released:</p>{" "}
+                    <span>
                       {!isSearchPage && game
                         ? new Date(game.releaseDate).toLocaleDateString()
                         : isSearchPage &&
@@ -237,9 +237,9 @@ export default function Game() {
                           ).toLocaleDateString()}
                     </span>
                   </span>
-                  <span className="text-sm">
-                    Developer:{" "}
-                    <span className="font-semibold">
+                  <span className="text-sm flex flex-col">
+                    <p className="font-semibold">Developer</p>{" "}
+                    <span>
                       {!isSearchPage
                         ? game?.developer
                         : igdbGame?.involved_companies.filter(
@@ -247,9 +247,9 @@ export default function Game() {
                           )[0].company.name}
                     </span>
                   </span>
-                  <span className="text-sm">
-                    Publisher:{" "}
-                    <span className="font-semibold">
+                  <span className="text-sm flex flex-col">
+                    <p className="font-semibold">Publisher:</p>{" "}
+                    <span>
                       {!isSearchPage
                         ? game?.publisher
                         : igdbGame?.involved_companies.filter(
