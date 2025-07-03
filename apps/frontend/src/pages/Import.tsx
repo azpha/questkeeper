@@ -1,11 +1,12 @@
-import Layout from "@/components/Layout";
 import api from "@/utils/api";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Link } from "react-router-dom";
-import type { IGDBSearchData, SteamGame } from "@/utils/types";
+import Layout from "@/components/Layout";
 import EmptyState from "@/components/EmptyState";
+import GameList from "@/components/Game/GameList";
+import { Button } from "@/components/ui/button";
+import type { IGDBSearchData, SteamGame } from "@/utils/types";
 
 export default function Import() {
   const steamIdField = useRef<HTMLInputElement | null>(null);
@@ -101,7 +102,7 @@ export default function Import() {
           <p>Games in your library matching this search query</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <GameList>
           {results
             ?.filter((v) => {
               return listOfExistingGames?.includes(v.slug);
@@ -126,7 +127,7 @@ export default function Import() {
                 </Link>
               );
             })}
-        </div>
+        </GameList>
       </div>
     );
   };
@@ -166,7 +167,7 @@ export default function Import() {
               <h1 className="text-2xl font-bold">Games you own</h1>
               <p>All of the games found in your Steam library</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <GameList>
               {results.filter((v) => !listOfExistingGames?.includes(v.slug)) &&
                 results.map((v, k) => {
                   return (
@@ -193,7 +194,7 @@ export default function Import() {
               <Button variant={"secondary"} onClick={nextPage}>
                 Load More
               </Button>
-            </div>
+            </GameList>
 
             <div className="my-2">
               {listOfExistingGames && listOfExistingGames.length > 0 && (
