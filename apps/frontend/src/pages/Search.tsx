@@ -1,15 +1,15 @@
 import api from "@/utils/api";
-import { Button } from "@/components/ui/button";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { debounce } from "lodash";
+import { Button } from "@/components/ui/button";
 import GameList from "@/components/Game/GameList";
 import Layout from "@/components/Layout";
 import EmptyState from "@/components/EmptyState";
-import type { IGDBSearchData } from "@/utils/types";
+import type { Game } from "@/utils/types";
 
 export default function Search() {
-  const [results, setResults] = useState<IGDBSearchData[] | null>(null);
+  const [results, setResults] = useState<Game[] | null>(null);
   const [addedGames, setAddedGames] = useState<{ gameSlug: string }[] | null>(
     null
   );
@@ -45,9 +45,11 @@ export default function Search() {
   const listOfExistingGames = useMemo(() => {
     const matchedInArray = results
       ?.filter((v) => {
-        return addedGames?.some((addedGame) => addedGame.gameSlug === v.slug);
+        return addedGames?.some(
+          (addedGame) => addedGame.gameSlug === v.gameSlug
+        );
       })
-      .map((v) => v.slug);
+      .map((v) => v.gameSlug);
     return matchedInArray;
   }, [results]);
 
@@ -62,7 +64,7 @@ export default function Search() {
         <GameList>
           {results
             ?.filter((v) => {
-              return listOfExistingGames?.includes(v.slug);
+              return listOfExistingGames?.includes(v.gameSlug);
             })
             .map((v, k) => {
               return (
@@ -73,12 +75,12 @@ export default function Search() {
                       query,
                     },
                   }}
-                  to={`/game/${v.slug}`}
+                  to={`/game/${v.gameSlug}`}
                   key={k}
                 >
                   <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
-                      {v.name}
+                      {v.title}
                     </h1>
                     <p className="whitespace-nowrap truncate">
                       {v.summary || "A Very Cool Game"}
@@ -125,7 +127,7 @@ export default function Search() {
           <div>
             <GameList>
               {results
-                .filter((v) => !listOfExistingGames?.includes(v.slug))
+                .filter((v) => !listOfExistingGames?.includes(v.gameSlug))
                 .map((v, k) => {
                   return (
                     <Link
@@ -135,12 +137,12 @@ export default function Search() {
                           query,
                         },
                       }}
-                      to={`/search/${v.slug}`}
+                      to={`/search/${v.gameSlug}`}
                       key={k}
                     >
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                         <h1 className="font-bold text-2xl whitespace-nowrap truncate">
-                          {v.name}
+                          {v.title}
                         </h1>
                         <p className="whitespace-nowrap truncate">
                           {v.summary}

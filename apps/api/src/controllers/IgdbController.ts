@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import Auth from "../services/Auth";
 import Schemas from "../utils/ZodSchemas";
 import Environment from "../utils/Environment";
+import { IGDBGameAddition } from "../utils/Types";
 
 const IGDB_BASE_URL = "https://api.igdb.com/v4/";
 
@@ -17,15 +18,23 @@ async function SearchForGame(req: Request, res: Response, next: NextFunction) {
         "Client-ID": Environment!.IGDB_CLIENT_ID,
         Authorization: twitchToken as string,
       },
-      body: `search "${gameName}"; fields name,slug,summary,websites.url;`,
+      body: `search "${gameName}"; fields name,slug,summary;`,
     });
 
     if (game.ok) {
       const data = await game.json();
       console.log(data[0].websites);
+
       res.status(200).json({
         status: 200,
-        data,
+        games: data.map((v: IGDBGameAddition) => {
+          return {
+            id: v.id,
+            title: v.name,
+            gameSlug: v.slug,
+            summary: v.summary,
+          };
+        }),
       });
     } else {
       console.log(await game.json());
@@ -54,9 +63,29 @@ async function GetGameBySlug(req: Request, res: Response, next: NextFunction) {
       const data = await game.json();
 
       if (data[0]) {
+        const game = data[0] as IGDBGameAddition;
         res.status(200).json({
           status: 200,
-          game: data[0],
+          game: {
+            id: game?.id,
+            title: game?.name,
+            summary: game?.summary,
+            coverUrl:
+              "https:" + game?.cover?.url.replace("t_thumb", "t_cover_big"),
+            storyline: game?.storyline,
+            screenshotUrls: game?.screenshots?.map(
+              (v) => "https:" + v.url.replace("t_thumb", "t_cover_big")
+            ),
+            releaseDate: new Date(game?.first_release_date * 1000),
+            genres: game?.genres?.map((v) => v.name),
+            platforms: game?.platforms?.map((v) => v.name),
+            developer:
+              game?.involved_companies?.filter((v) => v.developer)[0]?.company
+                ?.name || "Not Found",
+            publisher:
+              game?.involved_companies?.filter((v) => v.publisher)[0]?.company
+                ?.name || "Not Found",
+          },
         });
       } else {
         res.status(404).json({
@@ -104,10 +133,17 @@ async function SearchForSteamId(
       body: `where ${filterString}`,
     });
 
-    const data = await igdbResponse.json();
+    const data = (await igdbResponse.json()) as IGDBGameAddition[];
     res.status(200).json({
       status: 200,
-      data,
+      games: data.map((v) => {
+        return {
+          id: v.id,
+          title: v.name,
+          gameSlug: v.slug,
+          summary: v.summary,
+        };
+      }),
     });
   } catch (e) {
     next(e);

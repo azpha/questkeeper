@@ -1,11 +1,4 @@
-import type {
-  Game,
-  IGDBGameAddition,
-  IGDBSearchData,
-  PossibleGameStates,
-  SteamGame,
-  User,
-} from "./types";
+import type { Game, PossibleGameStates, SteamGame, User } from "./types";
 
 // game management endpoints
 async function updateGame(id: number, body: object) {
@@ -97,7 +90,7 @@ async function fetchGameFromIgdb(slug: string) {
   }).then(async (res) => {
     if (res.ok) {
       const data = await res.json();
-      return data.game as IGDBGameAddition;
+      return data.game as Game;
     } else throw new Error("Failed to fetch game!");
   });
 }
@@ -108,7 +101,7 @@ async function searchIgdb(query: string) {
   }).then(async (res) => {
     if (res.ok) {
       const data = await res.json();
-      return data.data as IGDBSearchData[];
+      return data.games as Game[];
     } else throw new Error("Failed to search!");
   });
 }
@@ -119,7 +112,7 @@ async function fetchSteamIgdbGames(ids: string) {
   }).then(async (res) => {
     if (res.ok) {
       const data = await res.json();
-      return data.data as IGDBSearchData[];
+      return data.games as Game[];
     } else throw new Error("Failed to fetch IGDB games using Steam ID!");
   });
 }

@@ -10,13 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Game, IGDBGameAddition, PossibleGameStates } from "@/utils/types";
+import type { Game, PossibleGameStates } from "@/utils/types";
 import { Button } from "@/components/ui/button";
 import GenrePill from "@/components/Game/GenrePill";
 
 export default function Game() {
   const [game, setGame] = useState<Game | null>(null);
-  const [igdbGame, setIgdbGame] = useState<IGDBGameAddition | null>(null);
   const [error, setError] = useState<string>("");
   const [hasLoaded, setHasLoaded] = useState<boolean>(false);
 
@@ -33,7 +32,7 @@ export default function Game() {
         api.fetchGameFromIgdb(params.slug).then((res) => {
           console.log(res);
           if (res) {
-            setIgdbGame(res);
+            setGame(res);
           }
         });
       } else if (params.type === "game") {
@@ -92,7 +91,7 @@ export default function Game() {
 
   return (
     <Layout>
-      {game || igdbGame ? (
+      {game ? (
         <div className="container mx-auto px-4 py-8">
           {backState && (
             <Link
@@ -111,7 +110,7 @@ export default function Game() {
                   src={
                     !isSearchPage
                       ? `/api/images/${game?.coverId}`
-                      : `http:${igdbGame?.cover.url.replace("t_thumb", "t_cover_big")}`
+                      : game?.coverUrl
                   }
                   alt={game?.title}
                 />
@@ -119,7 +118,7 @@ export default function Game() {
               <div className="grid grid-cols-3 gap-2">
                 {!isSearchPage ? (
                   <>
-                    {game?.screenshotIds.slice(0, 6).map((v, k) => {
+                    {game?.screenshotIds?.slice(0, 6).map((v, k) => {
                       return (
                         <div
                           key={k}
@@ -136,7 +135,7 @@ export default function Game() {
                   </>
                 ) : (
                   <>
-                    {igdbGame?.screenshots.map((v, k) => {
+                    {game?.screenshotUrls?.map((v, k) => {
                       console.log(v);
                       return (
                         <div
@@ -144,8 +143,8 @@ export default function Game() {
                           className="relative rounded overflow-hidden max-w-fit"
                         >
                           <img
-                            src={`http:${v.url.replace("t_thumb", "t_cover_big")}`}
-                            alt={igdbGame?.name + " Screenshot"}
+                            src={v}
+                            alt={game?.title + " Screenshot"}
                             className="hover:scale-105 transition-transform cursor-pointer"
                           />
                         </div>
@@ -158,25 +157,19 @@ export default function Game() {
 
             <div className="space-y-6">
               <div>
-                <h1 className="font-semibold text-3xl mb-2">
-                  {!isSearchPage ? game?.title : igdbGame?.name}
-                </h1>
+                <h1 className="font-semibold text-3xl mb-2">{game?.title}</h1>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex items-center gap-1">
                     <GenrePill
                       genre={
-                        !isSearchPage
-                          ? game && game.genres.length > 1
-                            ? game?.genres.join(", ")
-                            : game?.genres[0]
-                          : igdbGame && igdbGame.genres.length > 1
-                            ? igdbGame.genres.map((v) => v.name).join(", ")
-                            : igdbGame?.genres[0].name
+                        game && game.genres.length > 1
+                          ? game?.genres.join(", ")
+                          : game?.genres[0]
                       }
                     />
                   </div>
                 </div>
-                <p>{!isSearchPage ? game?.summary : igdbGame?.summary}</p>
+                <p>{game?.summary}</p>
               </div>
 
               <Card className="bg-zinc-600 text-white">
@@ -225,34 +218,16 @@ export default function Game() {
                   <span className="text-sm flex flex-col">
                     <p className="font-semibold">Released:</p>{" "}
                     <span>
-                      {!isSearchPage && game
-                        ? new Date(game.releaseDate).toLocaleDateString()
-                        : isSearchPage &&
-                          igdbGame &&
-                          new Date(
-                            igdbGame?.first_release_date * 1000
-                          ).toLocaleDateString()}
+                      {new Date(game.releaseDate).toLocaleDateString()}
                     </span>
                   </span>
                   <span className="text-sm flex flex-col">
                     <p className="font-semibold">Developer</p>{" "}
-                    <span>
-                      {!isSearchPage
-                        ? game?.developer
-                        : igdbGame?.involved_companies.filter(
-                            (v) => v.developer
-                          )[0].company.name}
-                    </span>
+                    <span>{game?.developer}</span>
                   </span>
                   <span className="text-sm flex flex-col">
                     <p className="font-semibold">Publisher:</p>{" "}
-                    <span>
-                      {!isSearchPage
-                        ? game?.publisher
-                        : igdbGame?.involved_companies.filter(
-                            (v) => v.publisher
-                          )[0].company.name}
-                    </span>
+                    <span>{game?.publisher}</span>
                   </span>
                 </CardHeader>
               </Card>
@@ -263,9 +238,7 @@ export default function Game() {
               <Card className="bg-zinc-600 text-white">
                 <CardHeader>
                   <CardTitle className="text-2xl">About This Game</CardTitle>
-                  <p className="leading">
-                    {!isSearchPage ? game?.storyline : igdbGame?.storyline}
-                  </p>
+                  <p className="leading">{game?.storyline}</p>
                 </CardHeader>
               </Card>
             </div>

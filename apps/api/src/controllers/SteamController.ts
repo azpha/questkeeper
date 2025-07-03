@@ -42,6 +42,7 @@ async function FetchUserGames(req: Request, res: Response, next: NextFunction) {
         }),
       });
     } else {
+      console.log(await steamResponse.json());
       res.status(500).json({
         status: 500,
         message: "Failed to fetch Steam library",

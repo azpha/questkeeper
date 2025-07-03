@@ -9,6 +9,7 @@ type SteamGame = {
 
 interface IGDBGameAddition {
   id: number;
+  slug?: string;
   cover: {
     id: number;
     url: string;

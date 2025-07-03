@@ -6,12 +6,12 @@ import Layout from "@/components/Layout";
 import EmptyState from "@/components/EmptyState";
 import GameList from "@/components/Game/GameList";
 import { Button } from "@/components/ui/button";
-import type { IGDBSearchData, SteamGame } from "@/utils/types";
+import type { Game, SteamGame } from "@/utils/types";
 
 export default function Import() {
   const steamIdField = useRef<HTMLInputElement | null>(null);
   const [initialLoad, setInitialLoad] = useState<boolean>(false);
-  const [results, setResults] = useState<IGDBSearchData[]>([]);
+  const [results, setResults] = useState<Game[]>([]);
   const [steamData, setSteamData] = useState<SteamGame[] | null>(null);
   const [steamOffset, setSteamOffset] = useState<number>(1);
   const [addedGames, setAddedGames] = useState<{ gameSlug: string }[] | null>(
@@ -29,7 +29,7 @@ export default function Import() {
 
       api.fetchSteamIgdbGames(idString).then((res) => {
         const doesExist = results.some((v) =>
-          res.some((value) => value.slug === v.slug)
+          res.some((value) => value.gameSlug === v.gameSlug)
         );
         if (!doesExist) {
           setResults((prevState) => {
@@ -88,9 +88,11 @@ export default function Import() {
   const listOfExistingGames = useMemo(() => {
     const matchedInArray = results
       ?.filter((v) => {
-        return addedGames?.some((addedGame) => addedGame.gameSlug === v.slug);
+        return addedGames?.some(
+          (addedGame) => addedGame.gameSlug === v.gameSlug
+        );
       })
-      .map((v) => v.slug);
+      .map((v) => v.gameSlug);
     return matchedInArray;
   }, [results]);
 
@@ -105,7 +107,7 @@ export default function Import() {
         <GameList>
           {results
             ?.filter((v) => {
-              return listOfExistingGames?.includes(v.slug);
+              return listOfExistingGames?.includes(v.gameSlug);
             })
             .map((v, k) => {
               return (
@@ -115,12 +117,12 @@ export default function Import() {
                       page: "import",
                     },
                   }}
-                  to={`/game/${v.slug}`}
+                  to={`/game/${v.gameSlug}`}
                   key={k}
                 >
                   <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                     <h1 className="font-bold text-2xl whitespace-nowrap truncate">
-                      {v.name}
+                      {v.title}
                     </h1>
                     <p className="whitespace-nowrap truncate">{v.summary}</p>
                   </div>
@@ -168,7 +170,9 @@ export default function Import() {
               <p>All of the games found in your Steam library</p>
             </div>
             <GameList>
-              {results.filter((v) => !listOfExistingGames?.includes(v.slug)) &&
+              {results.filter(
+                (v) => !listOfExistingGames?.includes(v.gameSlug)
+              ) &&
                 results.map((v, k) => {
                   return (
                     <Link
@@ -177,12 +181,12 @@ export default function Import() {
                           page: "import",
                         },
                       }}
-                      to={`/search/${v.slug}`}
+                      to={`/search/${v.gameSlug}`}
                       key={k}
                     >
                       <div className="select-none bg-zinc-800 border-white border border-solid rounded-lg p-2">
                         <h1 className="font-bold text-2xl whitespace-nowrap truncate">
-                          {v.name}
+                          {v.title}
                         </h1>
                         <p className="whitespace-nowrap truncate">
                           {v.summary}

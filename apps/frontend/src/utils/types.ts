@@ -2,8 +2,10 @@ type Game = {
   id: number;
   title: string;
   summary: string;
-  coverId: string;
-  screenshotIds: string[];
+  coverId?: string;
+  coverUrl?: string;
+  screenshotIds?: string[];
+  screenshotUrls?: string[];
   platforms: string[];
   developer: string;
   publisher: string;
@@ -27,7 +29,7 @@ interface IGDBGameAddition {
     url: string;
   };
   first_release_date: number;
-  genres: IGDBGenres[];
+  genres: Genres[];
   storyline?: string;
   involved_companies: InvolvedCompanies[];
   name: string;
@@ -42,7 +44,7 @@ interface IGDBSearchData {
   summary: string;
 }
 
-type IGDBGenres = {
+type Genres = {
   id: number;
   name: string;
 };
