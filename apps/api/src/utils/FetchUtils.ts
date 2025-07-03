@@ -21,12 +21,6 @@ async function FetchAndDownloadImage(url: string) {
   return id;
 }
 
-function GetImageFilePath(id: string) {
-  if (fs.existsSync(path.join(DOWNLOAD_PATH, id))) {
-    return path.join(DOWNLOAD_PATH, id);
-  } else return undefined;
-}
-
 function DeleteImage(id: string) {
   if (fs.existsSync(path.join(DOWNLOAD_PATH, id))) {
     fs.rmSync(path.join(DOWNLOAD_PATH, id));
@@ -35,6 +29,5 @@ function DeleteImage(id: string) {
 
 export default {
   FetchAndDownloadImage,
-  GetImageFilePath,
   DeleteImage,
 };
