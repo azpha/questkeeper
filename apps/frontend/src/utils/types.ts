@@ -22,50 +22,6 @@ type SteamGame = {
   playtime_forever: number;
 };
 
-interface IGDBGameAddition {
-  id: number;
-  cover: {
-    id: number;
-    url: string;
-  };
-  first_release_date: number;
-  genres: Genres[];
-  storyline?: string;
-  involved_companies: InvolvedCompanies[];
-  name: string;
-  platforms: Platforms[];
-  screenshots: Screenshots[];
-  summary: string;
-}
-interface IGDBSearchData {
-  id: number;
-  name: string;
-  slug: string;
-  summary: string;
-}
-
-type Genres = {
-  id: number;
-  name: string;
-};
-type InvolvedCompanies = {
-  id: number;
-  company: {
-    id: number;
-    name: string;
-  };
-  developer: boolean;
-  publisher: boolean;
-};
-type Platforms = {
-  id: number;
-  name: string;
-};
-type Screenshots = {
-  id: number;
-  url: string;
-};
-
 type User = {
   name: string;
   email: string;
@@ -81,5 +37,5 @@ enum PossibleGameStates {
   COMPLETED = "COMPLETED",
 }
 
-export type { Game, User, IGDBGameAddition, IGDBSearchData, SteamGame };
+export type { Game, User, SteamGame };
 export { PossibleGameStates };
